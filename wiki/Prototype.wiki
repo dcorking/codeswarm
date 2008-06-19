@@ -1,5 +1,15 @@
 #summary Notes on the original Processing application in /prototype.
 
+== Source Files ==
+ * code_swarm.pde - Main 
+ * Node.pde - abstract entities which move around
+ * PersonNode.pde - represents a person
+ * FileNode.pde - represents a file
+ * FileEvent.pde - a file committed at a certain time by a certain person
+ * Edge.pde - connects Nodes and pulls them together
+ * ColorAssigner.pde - maps files to colors using regexes
+ * ColorBins.pde - stores histogram bar colors
+
 So far only code_swarm.pde has been cleaned (mildly) and commented.
 
 I want to get permission first before uploading the data files. If it is not allowed, then I will create sample ones.
