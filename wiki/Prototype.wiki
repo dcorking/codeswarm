@@ -1,4 +1,4 @@
-#summary Notes on the original Processing application in /prototype.
+#summary Notes on the original Processing application in /trunk/prototype.
 
 == Source Files ==
  * code_swarm.pde - Main 
@@ -13,8 +13,8 @@
 So far only code_swarm.pde has been cleaned (mildly) and commented.
 
 The files I use as input, which contain the commit events, have two formats: _repository_ and _event_. They both are in XML.
- * Repository-formatted files are organized by the directory structure of the repository.
- * Event-formatted files are flat and sorted by time.
+ * Repository-formatted files are organized by the directory structure of the repository. {{{loadRepository()}}} and {{{loadRecurse()}}}
+ * Event-formatted files are flat and sorted by time. {{{loadRepEvents()}}}
 Why two formats? I needed to use one for another project.
 
 I want to get permission first before uploading the data files. If it is not allowed, then I will create sample ones.
