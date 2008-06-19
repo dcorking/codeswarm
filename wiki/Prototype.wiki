@@ -1,4 +1,4 @@
-#summary Notes on the original Processing application.
+#summary Notes on the original Processing application in /prototype.
 
 So far only code_swarm.pde has been cleaned (mildly) and commented.
 
