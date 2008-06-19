@@ -12,9 +12,14 @@
 
 So far only code_swarm.pde has been cleaned (mildly) and commented.
 
+== Data ==
+
 The files I use as input, which contain the commit events, have two formats: _repository_ and _event_. They both are in XML.
  * Repository-formatted files are organized by the directory structure of the repository. {{{loadRepository()}}} and {{{loadRecurse()}}}
  * Event-formatted files are flat and sorted by time. {{{loadRepEvents()}}}
 Why two formats? I needed to use one for another project.
 
 I want to get permission first before uploading the data files. If it is not allowed, then I will create sample ones.
+
+== Running ==
+Download and run the Processing IDE from http://processing.org. Open code_swarm.pde.
