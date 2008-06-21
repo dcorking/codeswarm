@@ -1,3 +1,22 @@
 #summary A high-level plan for the project.
 
-The Plan goes here.
+= Data Input =
+ * A standard XML schema for this project.
+  * I suggest we base it around the loadRepEvents() format. - michael.ogawa
+ * A collection of simple, stand-alone tools (in Python?) to convert originating data to the standard format.
+ * Do NOT support multiple input formats to the visualizer. Only allow input of the standard format.
+
+== Data Wishlist ==
+ * svn
+ * cvs
+ * git
+ * Wikimedia
+
+= Visualizer =
+ * Use the Processing library for now as an import, but make application independent of the P IDE.
+  * This implies using Java.
+ * Gradually phase out Processing-specific implementation.
+ * Create a GUI front-end.
+  * Load files
+  * Assign colors: manually or from a config file
+  * Whether and where to save frames
