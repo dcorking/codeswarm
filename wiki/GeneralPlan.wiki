@@ -1,5 +1,11 @@
 #summary A high-level plan for the project.
 
+= Audience =
+In order of priority:
+ # Desktop systems using the command line. Simple and modular.
+ # Inexperienced users who need a GUI. Easy to use.
+ # Large projects (like Linux and Wikipedia) needing lots of compute power. Fast and scalable.
+
 = Data Input =
  * A standard XML schema for this project.
   * I suggest we base it around the loadRepEvents() format. - michael.ogawa
