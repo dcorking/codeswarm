@@ -10,6 +10,7 @@ In order of priority:
  * A standard XML schema for this project.
   * I suggest we base it around the loadRepEvents() format. - michael.ogawa
  * A collection of simple, stand-alone tools (in Python?) to convert originating data to the standard format.
+  * Python would work great for this purpose, I can put together a small tool and you can be the judge if it is heading in the right direction. - cgalvan
  * Do NOT support multiple input formats to the visualizer. Only allow input of the standard format.
 
 == Data Wishlist ==
