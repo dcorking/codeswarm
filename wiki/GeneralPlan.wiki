@@ -15,7 +15,6 @@
 = Visualizer =
  * Use the Processing library for now as an import, but make application independent of the P IDE.
   * This implies using Java.
- * Gradually phase out Processing-specific implementation.
  * Create a GUI front-end.
   * Load files
   * Assign colors: manually or from a config file
