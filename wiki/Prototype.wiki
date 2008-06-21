@@ -21,5 +21,11 @@ Why two formats? I needed to use one for another project.
 
 I want to get permission first before uploading the data files. If it is not allowed, then I will create sample ones.
 
+== Assigning Colors ==
+The {{{ColorAssigner}}} object is created at construction time and is a flexible way to color your file nodes. It's {{{addRule()}}} method takes one regular expression and two colors, essentially defining a map of file path to color range. During the event loop, when files are introduced to the system, the {{{ColorAssigner.getColor()}}} method looks at the files's path and tries to match it with a regular expression in its list.  The {{{getColor()}}} method then returns a randomly chosen color from a linear interpolation of the range (in RGB space).
+Caveats: 
+ * If the file does not match any regular expression in the list, a default color is returned.
+ * If a file path matches multiple regular expressions in the list, the one added first is chosen.
+
 == Running ==
 Download and run the Processing IDE from http://processing.org. Open code_swarm.pde.
