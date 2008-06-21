@@ -1,5 +1,7 @@
 #summary Notes on the original Processing application in /trunk/prototype.
 
+*Go to http://processing.org/learning for help with the Processing language.*
+
 == Source Files ==
  * code_swarm.pde - Main 
  * Node.pde - abstract entities which move around
