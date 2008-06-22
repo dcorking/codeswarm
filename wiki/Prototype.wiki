@@ -1,4 +1,4 @@
-#summary Notes on the original Processing application in /trunk/prototype.
+#summary Notes on the original Processing sketch in /trunk/code_swarm.
 
 *Go to http://processing.org/learning for help with the Processing language.*
 
