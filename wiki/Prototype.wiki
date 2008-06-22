@@ -16,12 +16,11 @@ So far only code_swarm.pde has been cleaned (mildly) and commented.
 
 == Data ==
 
-The files I use as input, which contain the commit events, have two formats: _repository_ and _event_. They both are in XML.
- * Repository-formatted files are organized by the directory structure of the repository. {{{loadRepository()}}} and {{{loadRecurse()}}}
+The files I use as input, which contain the commit events, are in event format.
  * Event-formatted files are flat and sorted by time. {{{loadRepEvents()}}}
-Why two formats? I needed to use one for another project.
+ * Use {{{/code_swarm/data/sample-repevents.xml}}} to see what it looks like.
 
-I want to get permission first before uploading the data files. If it is not allowed, then I will create sample ones.
+There are other formats supported in the prototype, but these are deprecated.
 
 == Assigning Colors ==
 The {{{ColorAssigner}}} object is created at construction time and is a flexible way to color your file nodes. It's {{{addRule()}}} method takes one regular expression and two colors, essentially defining a map of file path to color range. During the event loop, when files are introduced to the system, the {{{ColorAssigner.getColor()}}} method looks at the files's path and tries to match it with a regular expression in its list.  The {{{getColor()}}} method then returns a randomly chosen color from a linear interpolation of the range (in RGB space).
