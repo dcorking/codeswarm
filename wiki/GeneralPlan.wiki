@@ -17,7 +17,7 @@ In order of priority:
  * svn
  * cvs
  * git
- * Wikimedia
+ * Wikimedia http://en.wikipedia.org/w/api.php
 
 = Visualizer =
  * Use the Processing library for now as an import, but make application independent of the P IDE.
