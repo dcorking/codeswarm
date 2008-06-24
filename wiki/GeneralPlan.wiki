@@ -20,9 +20,11 @@ In order of priority:
  * Wikimedia http://en.wikipedia.org/w/api.php
 
 = Visualizer =
- * Use the Processing library for now as an import, but make application independent of the P IDE.
+ * Use the Processing library for now as an import, but make application independent of the P IDE gradually.
   * This implies using Java.
- * Create a GUI front-end.
-  * Load files
-  * Assign colors: manually or from a config file
+ * The ONLY program input will be a config file. It will contain:
+  * Path to RepEvents file
+  * Color assignment rules
   * Whether and where to save frames
+ * The config file can be created with a text editor or a GUI front end.
+ * Why only a text file as input? This ensures that the color rules will be saved, as well as decouple the GUI from the visualization.
