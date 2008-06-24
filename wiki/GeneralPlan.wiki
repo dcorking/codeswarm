@@ -18,6 +18,7 @@ In order of priority:
  * cvs
  * git
  * Wikimedia http://en.wikipedia.org/w/api.php
+ * bzr
 
 = Visualizer =
  * Use the Processing library for now as an import, but make application independent of the P IDE gradually.
