@@ -32,6 +32,7 @@ Documentation to come
 = Convert the log =
 
 code_swarm has a python converter in its convert_logs directory.
+Before you start using it, make sure you read this issue report: [http://code.google.com/p/codeswarm/issues/detail?id=6]
 
 # Move to the convert_logs directory
 
