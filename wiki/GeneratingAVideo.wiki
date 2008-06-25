@@ -46,7 +46,7 @@ At this point, you will not need activity.log anymore, so you can delete it.
 
 = Executing code_swarm =
 
-To execute code_swarm, you need the Processing application (which uses Java). Open Processing and choose "Open". Point it to code_swarm/code_swarm.pde.
+To execute code_swarm, you need the Processing application (download from http://processing.org). Open Processing and choose "Open". Point it to code_swarm/code_swarm.pde.
 The automatic video generation doesn't work too well just yet, so we will have to first generate screenshots and *then* join them together to make a video.
 
 == Configuring code_swarm.pde ==
