@@ -1,0 +1,9 @@
+#summary A showcase for code_swarm videos.
+
+To encourage the production of excellent code_swarm videos, we will list existing ones here. If you create or come across one not in the list, please share it with us.
+
+_Note: Please add videos so the more recent ones are at the top._
+
+||Project||Soundtrack?||Captions?||Video Link||
+||XWiki||Yes||No||http://www.vimeo.com/1227560||
+||Django||Yes||No||http://www.vimeo.com/1223937||
