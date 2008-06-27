@@ -1,0 +1,10 @@
+#summary How to run code_swarm as a JOGL application
+
+= Introduction =
+
+I (arjenw) am busy porting code_swarm to a JOGL application. Although there is nothing usefull right now there are several steps to be made in order to run the application.
+
+When there is something runnable I will document the necessary steps here.
+
+
+= Details =
