@@ -1,6 +1,14 @@
 #summary Frequently Asked Questions
 #labels Featured
 
+*Why do I need the Processing IDE?*
+
+ The original code_swarm program was written in Processing and that's the form it was in when it was open sourced. We are working on a version that does not rely on the Processing IDE to be run.
+
+*Why is the non-Processing version so unusable?*
+
+ We're working on it.
+
 *I get a compiler error about !PriorityQueue.*
 
  Linux: Upgrade your JDK to 1.5 or later.
