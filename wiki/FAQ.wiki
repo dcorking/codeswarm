@@ -1,12 +1,17 @@
 #summary Frequently Asked Questions
+#labels Featured
 
 *I get a compiler error about !PriorityQueue.*
 
- Your Java version is older than 1.5. Upgrade your JDK.
+ Linux: Upgrade your JDK to 1.5 or later.
 
-*I upgraded my JDK and I _still_ get an error about !PriorityQueue.*
+ Mac OS X: Upgrade your Processing version to 0142 or later, at the bottom of [http://processing.org/download/index.html this page].
 
- Upgrade your Processing version to 0142 or later, at the bottom of [http://processing.org/download/index.html this page].
+ Windows: If you downloaded Processing without Java, upgrade your JDK to 1.5 or later. If you downloaded Processing with Java, upgrade to Processing 0142 or later, at the bottom of [http://processing.org/download/index.html this page]. 
+
+*I get a stack dump when I try to load a moderate- to large-sized XML file. What's going on?*
+
+ You need more heap memory. In Processing preferences or by using {{{-Xmx1000m}}} (one GB) with the JVM.
 
 *Why is there little to no documentation?*
 
@@ -14,4 +19,4 @@
 
 *I've made a video using your software. Are there any restrictions on it?*
 
- Your videos are yours alone. However we would appreciate it if you add appropriate credits and link back to the project whenever you distribute your videos.
+ Your videos are yours. However we would appreciate it if you add appropriate credits and link back to the project whenever you distribute your videos.
