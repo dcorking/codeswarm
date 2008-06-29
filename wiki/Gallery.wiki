@@ -6,3 +6,4 @@ To encourage the production of excellent code_swarm videos, we will list existin
 Vimeo channel: http://www.vimeo.com/codeswarmers
 
 == Other ==
+ * [http://rutube.ru/tracks/796349.html?v=986e91a6599f0ad4bb6d06fd5dfa9d12 RuTube]
