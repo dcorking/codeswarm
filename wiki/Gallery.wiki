@@ -2,8 +2,9 @@
 
 To encourage the production of excellent code_swarm videos, we will list existing ones here. If you create or come across one not in the list, please share it with us.
 
-== Site-specific ==
-Vimeo channel: http://www.vimeo.com/codeswarmers
+== Collections ==
+ * Vimeo channel: http://www.vimeo.com/codeswarmers
+ * Vimeo [http://www.vimeo.com/videos/search:codeswarm search for "codeswarm"]
 
-== Other ==
+== Individual ==
  * [http://rutube.ru/tracks/796349.html?v=986e91a6599f0ad4bb6d06fd5dfa9d12 RuTube]
