@@ -6,4 +6,4 @@
 
 *I upgraded my JDK and I _still_ get an error about !PriorityQueue.*
 
- Upgrade your Processing version to 0142 or later [http://processing.org/download/index.html here].
+ Upgrade your Processing version to 0142 or later, at the bottom of [http://processing.org/download/index.html this page].
