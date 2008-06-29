@@ -2,10 +2,7 @@
 
 To encourage the production of excellent code_swarm videos, we will list existing ones here. If you create or come across one not in the list, please share it with us.
 
-_Note: Please add videos so the more recent ones are at the top._
+== Site-specific ==
+Vimeo channel: http://www.vimeo.com/codeswarmers
 
-||Project||Soundtrack?||Captions?||Video Link||
-||RuTube||Yes||No||http://rutube.ru/tracks/796349.html?v=986e91a6599f0ad4bb6d06fd5dfa9d12||
-||Clang|| ? || ? ||http://vimeo.com/1242653||
-||XWiki||Yes||No||http://www.vimeo.com/1227560||
-||Django||Yes||No||http://www.vimeo.com/1223937||
+== Other ==
