@@ -1,0 +1,9 @@
+#summary Frequently Asked Questions
+
+*I get a compiler error about !PriorityQueue.*
+
+ Your Java version is older than 1.5. Upgrade your JDK.
+
+*I upgraded my JDK and I _still_ get an error about !PriorityQueue.*
+
+ Upgrade your Processing version to 0142 or later [http://processing.org/download/index.html here].
