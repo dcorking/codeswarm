@@ -5,6 +5,7 @@ To encourage the production of excellent code_swarm videos, we will list existin
 == Collections ==
  * Vimeo channel: http://www.vimeo.com/codeswarmers
  * Vimeo [http://www.vimeo.com/videos/search:codeswarm search for "codeswarm"]
+ * Flickr [http://www.flickr.com/search/?q=codeswarm&w=all search for "codeswarm"]
 
 == Individual ==
  * [http://rutube.ru/tracks/796349.html?v=986e91a6599f0ad4bb6d06fd5dfa9d12 RuTube]
