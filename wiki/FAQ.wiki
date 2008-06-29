@@ -28,3 +28,7 @@
 *I've made a video using your software. Are there any restrictions on it?*
 
  Your videos are yours. However we would appreciate it if you add appropriate credits and link back to the project whenever you distribute your videos.
+
+*Is code_swarm open source?*
+
+ Yes, under the [http://www.gnu.org/licenses/gpl.html GNU General Public License version 3].
