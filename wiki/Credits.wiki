@@ -6,4 +6,4 @@
  * Arjen Wiersma - Java cleanup and enhancement
 
 = Documentation =
- * Yannick Warnier - Video generation walkthrough
+ * Yannick Warnier - Processing video generation howto
