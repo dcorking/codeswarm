@@ -3,7 +3,7 @@
 
 *Why do I need the Processing IDE?*
 
- The original code_swarm program was written in Processing and that's the form it was in when it was open sourced. We are working on a version that does not rely on the Processing IDE to be run.
+ The original code_swarm program was written in Processing and that's the form it was in when it was open sourced. We are working on a version that does not rely on the Processing IDE to be run. Once that is ready we will stop support and distribution of the old version.
 
 *Why is the non-Processing version so unusable?*
 
