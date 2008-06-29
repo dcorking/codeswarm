@@ -32,3 +32,7 @@
 *Is code_swarm open source?*
 
  Yes, under the [http://www.gnu.org/licenses/gpl.html GNU General Public License version 3].
+
+*How can I contribute?*
+
+ You will need to provide a Google account or Gmail address. You can either send it to our [http://groups.google.com/group/codeswarm Google Group] or email Michael directly. Once you are added as a committer, you can make changes to the repository.
