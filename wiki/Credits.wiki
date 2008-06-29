@@ -1,0 +1,9 @@
+#summary Who's been doing what
+
+= Source Code =
+ * Chris Galvan - Python conversion script
+ * Michael Ogawa - Processing prototype and Java
+ * Arjen Wiersma - Java cleanup and enhancement
+
+= Documentation =
+ * Yannick Warnier - Video generation walkthrough
