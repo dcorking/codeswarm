@@ -19,7 +19,7 @@
 
 *I get a stack dump when I try to load a moderate- to large-sized XML file. What's going on?*
 
- You need more heap memory. In Processing preferences or by using {{{-Xmx1000m}}} (one GB) with the JVM.
+ You need more heap memory. Do this in Processing preferences or by using {{{-Xmx1000m}}} (one GB) with the JVM.
 
 *Why is there little to no documentation?*
 
