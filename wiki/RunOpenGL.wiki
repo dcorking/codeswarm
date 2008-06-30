@@ -6,8 +6,10 @@ You can now run code_swarm with opengl support.
 = Details =
 
 In quick, the steps are:
+  * locate your config file, a sample is /data/sample.config
   * set UseOpenGL to true in the config file 
   * add the 'lib' dir to your library path:
     * macosx: DYLD_LIBRARY_PATH
     * linux: LD_LIBRARY_PATH
-  * ant run
+  * 'ant build'
+  * './run.sh data/sample.config'
