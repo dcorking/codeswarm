@@ -9,7 +9,6 @@ In quick, the steps are:
   * locate your config file, a sample is /data/sample.config
   * set UseOpenGL to true in the config file 
   * add the 'lib' dir to your library path:
-    * macosx: DYLD_LIBRARY_PATH
-    * linux: LD_LIBRARY_PATH
-  * 'ant build'
-  * './run.sh data/sample.config'
+    * macosx: export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:<path to code_swarm/lib>
+    * linux: export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:<path to code_swarm/lib>
+  * 'ant run'
