@@ -3,6 +3,8 @@
 
 *Why do I need the Processing IDE?*
 
+ You don't. To run the trunk version of code_swarm you only need java and ant.
+
  The original code_swarm program was written in Processing and that's the form it was in when it was open sourced. We are working on a version that does not rely on the Processing IDE to be run. Once that is ready we will stop support and distribution of the old version.
 
 *Why is the non-Processing version so unusable?*
@@ -19,7 +21,7 @@
 
 *I get a stack dump when I try to load a moderate- to large-sized XML file. What's going on?*
 
- You need more heap memory. Do this in Processing preferences or by using {{{-Xmx1000m}}} (one GB) with the JVM.
+ You need more heap memory. Do this in Processing preferences or by setting {{{-Xmx1000m}}} (one GB) as a VM argument (see run.sh)
 
 *Why is there little to no documentation?*
 
