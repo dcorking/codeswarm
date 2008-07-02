@@ -21,7 +21,9 @@ The first step, of course, is to download code_swarm from SVN (check out the [So
 == SVN ==
 
 To get the activity log from your SVN repository, just get a local copy of your repository, enter the main directory and execute
+{{{
   svn log -v > activity.log
+}}}
 
 This will create a file called *activity.log*.
 
@@ -76,10 +78,9 @@ For PHP projects (or any language that is not currently supported) you will need
 # add a *phpColors();* call to the *initColors()* function (around line 110) and comment out the current *eclipseColors();* call
 
 # create a phpColors() function that will look like this:
+{{{
   void phpColors()
-
   {
-
     //code (red)
     colorAssigner.addRule( ".*\\.php", color(0,255,255), color(15,255,255) );
 
@@ -94,23 +95,25 @@ For PHP projects (or any language that is not currently supported) you will need
 
     //anything else (purple)
     colorAssigner.addRule( ".*", color(200,255,255), color(215,255,255) );
-
   }
+}}}
 
 Be careful that the color code is very tricky. We might need more information here, but the basic idea is that it's not a normal RGB code and it's not either a RGB color code mask. I added comments before every line so you can get an idea of what to use for at least five colors.
 
 = Creating the video = 
 The previous step created a series of screenshots in the PNG format under the *code_swarm/frames/* directory. Now you want to use them to build a video. MEncoder is one tool to do that. Just get into that frames/ directory and type:
 
-  mencoder mf://*.png -mf fps=24:type=png -ovc lavc -oac copy -o movie.avi
+
+  ,,mencoder mf://*.png -mf fps=24:type=png -ovc lavc -oac copy -o movie.avi,,
+
 
 For a 15000 commits video, this might take about 40MB, so you want to reduce the size a little bit. You can do that by converting to DivX (MPG4) and reducing the frame rate:
 
-  mencoder movie.avi  -ovc xvid -oac mp3lame -xvidencopts bitrate=200 -o project-activity.avi
+  ,,mencoder movie.avi  -ovc xvid -oac mp3lame -xvidencopts bitrate=200 -o project-activity.avi,,
 
 For a 40MB video, this reduces the size to 10MB. You can also try using the h264 format if your MEncoder has the right libraries to do so:
 
-  mencoder movie.avi -ovc x264 -oac mp3lame -xvidencopts bitrate=200 -o project-activity2.avi
+  ,,mencoder movie.avi -ovc x264 -oac mp3lame -xvidencopts bitrate=200 -o project-activity2.avi,,
 
 
 That's it, you should have a beautiful video of your project's activity by now!
