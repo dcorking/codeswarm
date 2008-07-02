@@ -4,15 +4,12 @@
 
 This guide explains how to generate a video under a Linux install (it is based on Linux tools) but might be applied to a Windows workstation as well (some other tools might need to be used)
 
-To make it short, generating your video is done in 4 steps
+To make it short, generating your video is done in 4 steps :
 
-# get the activity log out of your versionning system
-
-# convert the activity log to something code_swarm can use
-
-# excuting code_swarm
-
-# making a video out of the exported images
+ # get the activity log out of your versionning system
+ # convert the activity log to something code_swarm can use
+ # excuting code_swarm
+ # making a video out of the exported images
 
 The first step, of course, is to download code_swarm from SVN (check out the [Source] page for that, and the Processing program, which you will need to execute code_swarm. Processing is about 30MB to download, so plan that ahead.
 
@@ -36,11 +33,9 @@ Documentation to come
 code_swarm has a python converter in its convert_logs directory.
 Before you start using it, make sure you read this issue report: [http://code.google.com/p/codeswarm/issues/detail?id=6]
 
-# Move to the convert_logs directory
-
-# Copy the activity.log file generated above into the current directory
-
-# Launch *python convert_logs.py -s activity.log -o activity.xml
+ # Move to the convert_logs directory
+ # Copy the activity.log file generated above into the current directory
+ # Launch *python convert_logs.py -s activity.log -o activity.xml
 
 This will generate a file called acitvity.xml. 
 
@@ -53,21 +48,21 @@ The automatic video generation doesn't work too well just yet, so we will have t
 
 == Configuring code_swarm.pde ==
 
-You will need to make a few changes inside code_swarm.pde in order to suit your program.
+You will need to make a few changes inside code_swarm.pde in order to suit your program :
 
-*int WIDTH = 640;* defines the width of the generated screenshots. This is the recommended value (below that, graphics start to get over one another).
+ * *int WIDTH = 640;* defines the width of the generated screenshots. This is the recommended value (below that, graphics start to get over one another).
 
-*int HEIGHT = 480;* defines the height of the generated screenshots. This is the recommended value.
+ * *int HEIGHT = 480;* defines the height of the generated screenshots. This is the recommended value.
 
-*int FRAME_RATE = 24;* defines the frame rate (how many images per second in the resulting video to get a smooth animation. 24 is a good value.
+ * *int FRAME_RATE = 24;* defines the frame rate (how many images per second in the resulting video to get a smooth animation. 24 is a good value.
 
-*String INPUT_FILE = "log.xml";* should be changed to whatever your log file's name is (in the example above, it was *activity.xml*)
+ * *String INPUT_FILE = "log.xml";* should be changed to whatever your log file's name is (in the example above, it was *activity.xml*)
 
-*long dateSkipper* defines the frequency to which a new image is shown. By default, there are 4 images per day (6*60*60*1000, or one every 6 hours). You could change that to every 2 hours if you have a very active project using: 2*60*60*1000.
+ * *long dateSkipper* defines the frequency to which a new image is shown. By default, there are 4 images per day (6*60*60*1000, or one every 6 hours). You could change that to every 2 hours if you have a very active project using: 2*60*60*1000.
 
-*boolean takeSnapshots* has to be true if you want to generate screenshots, which is necessary at this point
+ * *boolean takeSnapshots* has to be true if you want to generate screenshots, which is necessary at this point
 
-*boolean showLegend* (around line 60) could be set to true if you want a color legend to be shown in the top-left of your screenshots. So far, the legend is a big ugly as it doesn't translate the regular expressions in a human way, but still it helps understand what is what.
+ * *boolean showLegend* (around line 60) could be set to true if you want a color legend to be shown in the top-left of your screenshots. So far, the legend is a big ugly as it doesn't translate the regular expressions in a human way, but still it helps understand what is what.
 
 == Executing code_swarm ==
 Once you are ready, just click the "play/run" button and wait. This operation could take up to several hours for large activity logs. To give a rough idea, it takes 2 hours using one processor of a dual-core 1.3GHz for an activity log of about 15000 commits (spread over 4 years).
@@ -75,12 +70,11 @@ Once you are ready, just click the "play/run" button and wait. This operation co
 == Executing for PHP project ==
 For PHP projects (or any language that is not currently supported) you will need to:
 
-# add a *phpColors();* call to the *initColors()* function (around line 110) and comment out the current *eclipseColors();* call
+ # add a *phpColors();* call to the *initColors()* function (around line 110) and comment out the current *eclipseColors();* call
 
-# create a phpColors() function that will look like this:
+ # create a phpColors() function that will look like this:
 {{{
-  void phpColors()
-  {
+  void phpColors() {
     //code (red)
     colorAssigner.addRule( ".*\\.php", color(0,255,255), color(15,255,255) );
 
@@ -103,17 +97,20 @@ Be careful that the color code is very tricky. We might need more information he
 = Creating the video = 
 The previous step created a series of screenshots in the PNG format under the *code_swarm/frames/* directory. Now you want to use them to build a video. MEncoder is one tool to do that. Just get into that frames/ directory and type:
 
-
-  ,,mencoder mf://*.png -mf fps=24:type=png -ovc lavc -oac copy -o movie.avi,,
-
+{{{
+  mencoder mf://*.png -mf fps=24:type=png -ovc lavc -oac copy -o movie.avi
+}}}
 
 For a 15000 commits video, this might take about 40MB, so you want to reduce the size a little bit. You can do that by converting to DivX (MPG4) and reducing the frame rate:
 
-  ,,mencoder movie.avi  -ovc xvid -oac mp3lame -xvidencopts bitrate=200 -o project-activity.avi,,
+{{{
+  mencoder movie.avi  -ovc xvid -oac mp3lame -xvidencopts bitrate=200 -o project-activity.avi
+}}}
 
 For a 40MB video, this reduces the size to 10MB. You can also try using the h264 format if your MEncoder has the right libraries to do so:
 
-  ,,mencoder movie.avi -ovc x264 -oac mp3lame -xvidencopts bitrate=200 -o project-activity2.avi,,
-
+{{{
+  mencoder movie.avi -ovc x264 -oac mp3lame -xvidencopts bitrate=200 -o project-activity2.avi
+}}}
 
 That's it, you should have a beautiful video of your project's activity by now!
