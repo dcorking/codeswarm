@@ -81,23 +81,18 @@ For PHP projects (or any language that is not currently supported) you will need
   {
 
     //code (red)
-
     colorAssigner.addRule( ".*\\.php", color(0,255,255), color(15,255,255) );
 
     //documentation (blue)
-
     colorAssigner.addRule( ".*/documentation/.*|.*/lang/.*|.*\\.html|.*\\.htm", color(150,255,255), color(170,255,255) );
 
     //media (turquoise)
-
     colorAssigner.addRule( ".*\\.gif|.*\\.jpg|.*\\.jpeg|.*\\.png|.*\\.css|.*\\.swf", color(120,255,255), color(135,255,255) );
 
     //alternative code (orange)
-
     colorAssigner.addRule( ".*\\.js|.*\\.jar|.*\\.war|.*\\.java|.*\\.class|.*\\.lzx", color(25,255,255), color(40,255,255) );
 
     //anything else (purple)
-
     colorAssigner.addRule( ".*", color(200,255,255), color(215,255,255) );
 
   }
