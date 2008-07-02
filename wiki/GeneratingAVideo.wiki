@@ -51,17 +51,11 @@ The automatic video generation doesn't work too well just yet, so we will have t
 You will need to make a few changes inside code_swarm.pde in order to suit your program :
 
  * *int WIDTH = 640;* defines the width of the generated screenshots. This is the recommended value (below that, graphics start to get over one another).
-
  * *int HEIGHT = 480;* defines the height of the generated screenshots. This is the recommended value.
-
  * *int FRAME_RATE = 24;* defines the frame rate (how many images per second in the resulting video to get a smooth animation. 24 is a good value.
-
  * *String INPUT_FILE = "log.xml";* should be changed to whatever your log file's name is (in the example above, it was *activity.xml*)
-
  * *long dateSkipper* defines the frequency to which a new image is shown. By default, there are 4 images per day (6*60*60*1000, or one every 6 hours). You could change that to every 2 hours if you have a very active project using: 2*60*60*1000.
-
  * *boolean takeSnapshots* has to be true if you want to generate screenshots, which is necessary at this point
-
  * *boolean showLegend* (around line 60) could be set to true if you want a color legend to be shown in the top-left of your screenshots. So far, the legend is a big ugly as it doesn't translate the regular expressions in a human way, but still it helps understand what is what.
 
 == Executing code_swarm ==
@@ -71,7 +65,6 @@ Once you are ready, just click the "play/run" button and wait. This operation co
 For PHP projects (or any language that is not currently supported) you will need to:
 
  # add a *phpColors();* call to the *initColors()* function (around line 110) and comment out the current *eclipseColors();* call
-
  # create a phpColors() function that will look like this:
 {{{
   void phpColors() {
