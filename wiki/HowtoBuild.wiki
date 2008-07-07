@@ -5,15 +5,13 @@
 
 This guide explains how to setup your development environment to build the binary (ie. jar) version of code_swarm from Java sources.
 
-== Target audience ==
-Explanations require at least an understanding of computing and of your Operating System, even if no Java skills are needed.
+ * Target audience : Explanations require at least an understanding of computing and of your Operating System, even if no Java skills are needed.
 
-== Target environment ==
-For now on, Linux Ubuntu 8.04 and Windows XP are described, but would not be difficult to adapt for other Linux/Unix systems, like for Mac.
+ * Target environment : For now on, Linux Ubuntu 8.04 and Windows XP are described, but would not be difficult to adapt for other Linux/Unix systems, like for Mac.
 
 = Setting up the environment =
 
-You will need the "Ant" software building tool, and the Java SDK from sun _(no idea if other SDK could do the job)_.
+You will need a working *Java Runtime Environment* the *Ant* software building tool, and the *Java SDK (JDK)* from Sun _(no idea if other SDK could do the job)_.
 
 == Linux ==
 _This guide is written with a Debian based Linux, Ubuntu 8.04._ It would requires some minor adaptation to use on other distribution (other packaging systems).
@@ -63,5 +61,5 @@ Other commands :
  * "ant clean" will delete all intermediate and binary files
 
 = See also =
- * FAQ
+ * [FAQ]
  * GeneralPlan
