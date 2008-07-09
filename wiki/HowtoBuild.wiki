@@ -60,6 +60,59 @@ Other commands :
  * "ant all" will also generate the Javadoc HTML sources documentation
  * "ant clean" will delete all intermediate and binary files
 
+=Using Eclipse=
+
+*Linux users:  You must use Sun's java vm.  The GNU one doesn't work.*
+==If you don't have Eclipse installed==
+ * Download the latest Eclipse IDE currently Ganymede.  http://www.eclipse.org/downloads/
+   * The Classic or Java Developer version is fine.
+ * Eclipse unzips into it's own directory and can be run from there.  It doesn't have to be placed anywhere special.  This is very useful when testing new releases of Eclipse.
+
+==Ensure you have the SVN interface installed==
+ * Help -> Software Updates
+ * Click the Available Software tab.
+ * Click Add Site...
+ * Enter: http://www.polarion.org/projects/subversive/download/eclipse/2.0/update-site/
+
+ * Expand Ganymede and then Collaboration Tools.  Select SVN Team Provider.
+ * Expand the polarion.org one and then Subversive SVN Connectors.  Select SVNKit.
+
+ * Click Install... and Follow prompts from there.
+
+==After getting SVN==
+
+ * Open a new project.  (Just the Project... one, not one of the others.)
+   * Expand SVN and choose Projects from SVN.
+   * Ensure that Create a new repository location is selected and click next.
+   * Enter the URL provided by Google and select Use a custom label.
+   * Enter codeswarm for the label if you are helping with the project codeswarm-read-only otherwise.
+   * Under Authentication, enter nothing if using codeswarm-read-only.  If you are helping with the project, enter your google account name and the google code password that was generated for you.
+   * Click Yes if it asks you to normalize the URL.
+   * Select trunk and click Finish.
+   * Leave 'Check out as a project configured using the New Project Wizard' selected.
+   * Click Finish.
+ * Type Java Project in the filter box and select Java Project, Click Next.
+   * For project name, use Code Swarm.
+   * Leave the rest alone.  Click Finish.
+
+ * Under Project select Properties.
+ * Select Java Build Path.
+ * Select the Libraries Tab.
+ * Click Add Jars...
+ * Select all in the lib directory and click Ok.
+ * Select Run/Debug Settings and click New...
+ * Select Java Application and click OK.
+ * For the Name, enter Code Swarm.
+ * Click Search next to Main class.
+ * Select code_swarm and click OK.
+ * Select the Arguments tab.
+ * For the Program arguments, enter data/sample.config
+ * For the VM arguments, put -Xmx1000m  (this is for 1Gb of memory, use less if you need to, 512 works well for most.)
+ * Click OK. Until Properties is closed.
+
+The green play button should build and launch the app.  Enjoy.
+
+
 = See also =
  * [FAQ]
  * GeneralPlan
