@@ -106,4 +106,12 @@ For a 40MB video, this reduces the size to 10MB. You can also try using the h264
   mencoder movie.avi -ovc x264 -oac mp3lame -xvidencopts bitrate=200 -o project-activity2.avi
 }}}
 
+To make a high quality .mov (no loss from the frames) suitable for iMovie or Final Cut:
+
+{{{
+  ffmpeg -f image2 -r 24 -i ./frames/swarm-%05d.png -sameq ./out.mov -pass 2 
+}}}
+
+(Or you can use Quick Time Player to open a image sequence and then save a resulting high quality .mov file.)
+
 That's it, you should have a beautiful video of your project's activity by now!
