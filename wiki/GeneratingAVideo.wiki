@@ -43,7 +43,11 @@ At this point, you will not need activity.log anymore, so you can delete it.
 
 = Executing code_swarm =
 
-To execute code_swarm, you need just need ant and javac. To use the original code_swarm code see the Prototype page. For most people, you just want to check out trunk and use the supplied ant script or run.sh script in that directory. Ignore everything under trunk/code_swarm as this is the old prototype. Before running, you will need to configure a config file for your project. /trunk/data has an example of a config file. See the rest of the wiki for more help. 
+To execute code_swarm, you need just need *ant* and *javac*. For most people, you just want to check out trunk and use the supplied ant script or run.sh script in that directory. Please refer to the [[HowtoBuild]] Wiki page.
+
+Ignore everything under trunk/code_swarm as this is the old prototype. To use the original code_swarm code see the [[Prototype]] page.
+
+Before running, you will need to configure a config file for your project. /trunk/data has an example of a config file. See the rest of the wiki for more help. 
 
 = Creating the video = 
 The previous step created a series of screenshots in the PNG format under the *code_swarm/frames/* directory. Now you want to use them to build a video. MEncoder is one tool to do that. Just get into that frames/ directory and type:
