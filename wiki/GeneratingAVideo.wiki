@@ -43,49 +43,7 @@ At this point, you will not need activity.log anymore, so you can delete it.
 
 = Executing code_swarm =
 
-To execute code_swarm, you need the Processing application (download from http://processing.org). Open Processing and choose "Open". Point it to code_swarm/code_swarm.pde.
-The automatic video generation doesn't work too well just yet, so we will have to first generate screenshots and *then* join them together to make a video.
-
-== Configuring code_swarm.pde ==
-
-You will need to make a few changes inside code_swarm.pde in order to suit your program :
-
- * *int WIDTH = 640;* defines the width of the generated screenshots. This is the recommended value (below that, graphics start to get over one another).
- * *int HEIGHT = 480;* defines the height of the generated screenshots. This is the recommended value.
- * *int FRAME_RATE = 24;* defines the frame rate (how many images per second in the resulting video to get a smooth animation. 24 is a good value.
- * *String INPUT_FILE = "log.xml";* should be changed to whatever your log file's name is (in the example above, it was *activity.xml*)
- * *long dateSkipper* defines the frequency to which a new image is shown. By default, there are 4 images per day (6*60*60*1000, or one every 6 hours). You could change that to every 2 hours if you have a very active project using: 2*60*60*1000.
- * *boolean takeSnapshots* has to be true if you want to generate screenshots, which is necessary at this point
- * *boolean showLegend* (around line 60) could be set to true if you want a color legend to be shown in the top-left of your screenshots. So far, the legend is a big ugly as it doesn't translate the regular expressions in a human way, but still it helps understand what is what.
-
-== Executing code_swarm ==
-Once you are ready, just click the "play/run" button and wait. This operation could take up to several hours for large activity logs. To give a rough idea, it takes 2 hours using one processor of a dual-core 1.3GHz for an activity log of about 15000 commits (spread over 4 years).
-
-== Executing for PHP project ==
-For PHP projects (or any language that is not currently supported) you will need to:
-
- # add a *phpColors();* call to the *initColors()* function (around line 110) and comment out the current *eclipseColors();* call
- # create a phpColors() function that will look like this:
-{{{
-  void phpColors() {
-    //code (red)
-    colorAssigner.addRule( ".*\\.php", color(0,255,255), color(15,255,255) );
-
-    //documentation (blue)
-    colorAssigner.addRule( ".*/documentation/.*|.*/lang/.*|.*\\.html|.*\\.htm", color(150,255,255), color(170,255,255) );
-
-    //media (turquoise)
-    colorAssigner.addRule( ".*\\.gif|.*\\.jpg|.*\\.jpeg|.*\\.png|.*\\.css|.*\\.swf", color(120,255,255), color(135,255,255) );
-
-    //alternative code (orange)
-    colorAssigner.addRule( ".*\\.js|.*\\.jar|.*\\.war|.*\\.java|.*\\.class|.*\\.lzx", color(25,255,255), color(40,255,255) );
-
-    //anything else (purple)
-    colorAssigner.addRule( ".*", color(200,255,255), color(215,255,255) );
-  }
-}}}
-
-Be careful that the color code is very tricky. We might need more information here, but the basic idea is that it's not a normal RGB code and it's not either a RGB color code mask. I added comments before every line so you can get an idea of what to use for at least five colors.
+To execute code_swarm, you need just need ant and javac. To use the original code_swarm code see the Prototype page. For most people, you just want to check out trunk and use the supplied ant script or run.sh script in that directory. Ignore everything under trunk/code_swarm as this is the old prototype. Before running, you will need to configure a config file for your project. /trunk/data has an example of a config file. See the rest of the wiki for more help. 
 
 = Creating the video = 
 The previous step created a series of screenshots in the PNG format under the *code_swarm/frames/* directory. Now you want to use them to build a video. MEncoder is one tool to do that. Just get into that frames/ directory and type:
