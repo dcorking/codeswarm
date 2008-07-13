@@ -119,6 +119,13 @@ ant clean
 
  * Under Project select Properties.
  * Select Java Build Path.
+ * Click Add Folder...
+ * Expand trunk and click the box next to src.
+ * Click OK.
+ * Select Included: and click Edit.
+ * Click Add...
+ * Enter *.java and click OK.
+ * Click Finish.
  * Select the Libraries Tab.
  * Click Add Jars...
  * Select all in the lib directory and click Ok.
