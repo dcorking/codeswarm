@@ -1,4 +1,6 @@
-#summary Notes on the original Processing sketch in /trunk/code_swarm.
+#summary Notes on the original Processing sketch in /tags/prototype/code_swarm.
+
+*_The Processing prototype will not be developed or supported by this project. It is kept in tags for historical reference. Use at your own risk._*
 
 *Go to http://processing.org/learning for help with the Processing language.*
 
