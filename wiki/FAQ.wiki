@@ -1,27 +1,19 @@
 #summary Frequently Asked Questions
 #labels Featured
 
-*Why do I need the Processing IDE?*
+*Do I need the Processing IDE?*
 
  You don't. To run the trunk version of code_swarm you only need java and ant.
 
- The original code_swarm program was written in Processing and that's the form it was in when it was open sourced. We are working on a version that does not rely on the Processing IDE to be run. Once that is ready we will stop support and distribution of the old version.
+ The original code_swarm program was written in Processing and that's the form it was in when it was open sourced. It is kept in tags for historical reference.
 
-*Why is the non-Processing version so unusable?*
+*I get a compiler error about !java.util.PriorityQueue.*
 
- We're working on it.
-
-*I get a compiler error about !PriorityQueue.*
-
- Linux: Upgrade your JDK to 1.5 or later.
-
- Mac OS X: Upgrade your Processing version to 0142 or later, at the bottom of [http://processing.org/download/index.html this page].
-
- Windows: If you downloaded Processing without Java, upgrade your JDK to 1.5 or later. If you downloaded Processing with Java, upgrade to Processing 0142 or later, at the bottom of [http://processing.org/download/index.html this page]. 
+ Upgrade your JDK to 1.5 or later.
 
 *I get a stack dump when I try to load a moderate- to large-sized XML file. What's going on?*
 
- You need more heap memory. Do this in Processing preferences or by setting {{{-Xmx1000m}}} (one GB) as a VM argument (see run.sh)
+ You need more heap memory. Do this by setting {{{-Xmx1000m}}} (one GB) as a VM argument (see run.sh).
 
 *Why is there little to no documentation?*
 
