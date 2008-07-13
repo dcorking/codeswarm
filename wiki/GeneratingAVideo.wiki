@@ -11,7 +11,7 @@ To make it short, generating your video is done in 4 steps :
  # excuting code_swarm
  # making a video out of the exported images
 
-The first step, of course, is to download code_swarm from SVN (check out the [Source] page for that, and the Processing program, which you will need to execute code_swarm. Processing is about 30MB to download, so plan that ahead.
+The first step, of course, is to download code_swarm from SVN (check out the [Source] page for that). You will also need java and ant to build it.
 
 = Getting the activity log =
 
@@ -44,8 +44,6 @@ At this point, you will not need activity.log anymore, so you can delete it.
 = Executing code_swarm =
 
 To execute code_swarm, you need just need *ant* and *javac*. For most people, you just want to check out trunk and use the supplied ant script or run.sh script in that directory. Please refer to the [[HowtoBuild]] Wiki page.
-
-Ignore everything under trunk/code_swarm as this is the old prototype. To use the original code_swarm code see the [[Prototype]] page.
 
 Before running, you will need to configure a config file for your project. /trunk/data has an example of a config file. See the rest of the wiki for more help. 
 
