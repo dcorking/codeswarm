@@ -124,7 +124,7 @@ ant clean
  * Click OK.
  * Select Included: and click Edit.
  * Click Add...
- * Enter *.java and click OK.
+ * Enter `*.java` and click OK.
  * Click Finish.
  * Select the Libraries Tab.
  * Click Add Jars...
