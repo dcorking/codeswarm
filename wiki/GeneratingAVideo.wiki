@@ -11,7 +11,7 @@ To make it short, generating your video is done in 4 steps :
  # excuting code_swarm
  # making a video out of the exported images
 
-The first step, of course, is to download code_swarm from SVN (check out the [Source] page for that). You will also need java and ant to build it.
+The first step, of course, is to download code_swarm from SVN (check out the [http://code.google.com/p/codeswarm/source/checkout Source Checkout] page for that). You will also need java and ant to build it.
 
 = Getting the activity log =
 
