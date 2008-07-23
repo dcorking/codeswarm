@@ -17,7 +17,7 @@ In order of priority:
  * svn
  * cvs
  * git
- * Wikimedia http://en.wikipedia.org/w/api.php
+ * MediaWiki
  * bzr
 
 = Visualizer =
