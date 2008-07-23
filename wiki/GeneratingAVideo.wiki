@@ -24,6 +24,10 @@ To get the activity log from your SVN repository, just get a local copy of your 
 
 This will create a file called *activity.log*.
 
+== MediaWiki (Using SwarmExport extension) ==
+
+To get a wikiswarm report from the wiki use the maintenance script inside of the SwarmExport extension: [http://svn.nadir-point.com/viewvc/mediawiki-extensions/branches/stable/SwarmExport/]
+
 == Other versionning systems ==
 
 Documentation to come
@@ -35,9 +39,11 @@ Before you start using it, make sure you read this issue report: [http://code.go
 
  # Move to the convert_logs directory
  # Copy the activity.log file generated above into the current directory
- # Launch *python convert_logs.py -s activity.log -o activity.xml
+ # Launch the convert_logs.py script:
+  * For SVN use: python convert_logs.py -s activity.log -o activity.xml
+  * For MediaWiki using SwarmExport use: python convert_logs.py --wikiswarm-log=activity.log -o activity.xml
 
-This will generate a file called acitvity.xml. 
+This will generate a file called activity.xml. 
 
 At this point, you will not need activity.log anymore, so you can delete it.
 
