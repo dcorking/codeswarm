@@ -28,6 +28,13 @@ This will create a file called *activity.log*.
 
 To get a wikiswarm report from the wiki use the maintenance script inside of the SwarmExport extension: [http://svn.nadir-point.com/viewvc/mediawiki-extensions/branches/stable/SwarmExport/]
 
+== CVS ==
+
+To get the activity log from your CVS repository, just get a local copy of your repository, enter the main directory and execute
+{{{
+  cvs log > activity.log
+}}}
+
 == Other versionning systems ==
 
 Documentation to come
