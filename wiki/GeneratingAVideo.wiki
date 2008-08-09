@@ -2,6 +2,13 @@
 
 = Introduction =
 
+There are several ways to generate a video: 
+
+ * if you want to access a subversion repository, simply run *`runrepositoryfetch.bat`* on windows systems or *`runrepository.sh`* on linux (linux support for this way has not been tested yet). 
+A dialog will show up, asking you for the repository url, your username and password. 
+The repository gets fetched, converted and codeswarm will be started. This will create the frames of the video for you. If you want to create a real video, see "*Creating the video*" (below).
+ * if you want to access a non-svn repository, read on:
+
 This guide explains how to generate a video under a Linux install (it is based on Linux tools) but might be applied to a Windows workstation as well (some other tools might need to be used)
 
 To make it short, generating your video is done in 4 steps :
