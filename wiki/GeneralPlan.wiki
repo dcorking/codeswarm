@@ -9,9 +9,11 @@ In order of priority:
 = Data Input =
  * A standard XML schema for this project.
   * I suggest we base it around the loadRepEvents() format. - michael.ogawa
+   * I'd suggest to create a data-access-object for the loadRepEvents-format. That way, the format can be altered (enhanced) in a simple way. Furthermore a well-defined data-access-interface could enable different input-formats by using different daos. - kraeusen
  * A collection of simple, stand-alone tools (in Python?) to convert originating data to the standard format.
   * Python would work great for this purpose, I can put together a small tool and you can be the judge if it is heading in the right direction. - cgalvan
- * Do NOT support multiple input formats to the visualizer. Only allow input of the standard format.
+  * I think it's not a good idea to require the user to have several environments installed to run codeswarm. IMHO it would be great if the whole application would simply depend on a jre. (Combined with a gui and binary releases, codeswarm would be an easy to install and easy to use application). - kraeusen
+ * Do NOT support multiple input formats to the visualizer. Only allow input of the standard format. 
 
 == Data Wishlist ==
  * svn
@@ -29,3 +31,7 @@ In order of priority:
   * Whether and where to save frames
  * The config file can be created with a text editor or a GUI front end.
  * Why only a text file as input? This ensures that the color rules will be saved, as well as decouple the GUI from the visualization.
+  * I'd suggest to switch the file-format to standard java properties file. That way, it would be easy to load and store the config as well as to edit it in a text-editor (with the limitation that some characters would have to be escaped). - kraeusen
+
+= Application code=
+  * code_swarm.java needs to be split into several java-files and some cleanup is required. I believe that more developers would contribute if the code would be easier to understand. -kraeusen
