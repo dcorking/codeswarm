@@ -32,6 +32,7 @@ In order of priority:
  * The config file can be created with a text editor or a GUI front end.
  * Why only a text file as input? This ensures that the color rules will be saved, as well as decouple the GUI from the visualization.
   * I'd suggest to switch the file-format to standard java properties file. That way, it would be easy to load and store the config as well as to edit it in a text-editor (with the limitation that some characters would have to be escaped). - kraeusen
-
+ * It would be great if the visualization would not simply stop when the last repository check-in is logged, but fade out (to the future) until no person or file is "alive" anymore. - kraeusen
 = Application code=
   * code_swarm.java needs to be split into several java-files and some cleanup is required. I believe that more developers would contribute if the code would be easier to understand. -kraeusen
+  * I would love to create a nice looking easy to use Swing-GUI for codeswarm, but that requires some code-cleanup in the first place. I'd prefer using Netbeans instead of Eclipse for that. - kraeusen
