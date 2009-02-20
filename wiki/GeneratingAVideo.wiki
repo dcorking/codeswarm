@@ -44,6 +44,12 @@ This will create a file called *activity.log*.
 
 To get a wikiswarm report from the wiki use the maintenance script inside of the SwarmExport extension: [http://svn.nadir-point.com/viewvc/mediawiki-extensions/branches/stable/SwarmExport/]
 
+== darcs ==
+
+{{{
+  darcs changes --summary --reverse > activity.log
+}}}
+
 == Other versionning systems ==
 
 Documentation to come
@@ -59,6 +65,7 @@ Before you start using it, make sure you read this issue report: [http://code.go
   * For SVN use: python convert_logs.py -s activity.log -o activity.xml
   * For CVS use: python convert_logs.py -c activity.log -o activity.xml
   * For MediaWiki using SwarmExport use: python convert_logs.py --wikiswarm-log=activity.log -o activity.xml
+  * For a list of other available systems, use: python convert_logs.py --help
 
 This will generate a file called activity.xml. 
 
