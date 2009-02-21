@@ -6,6 +6,17 @@ In order of priority:
  # Inexperienced users who need a GUI. Easy to use.
  # Large projects (like Linux and Wikipedia) needing lots of compute power. Fast and scalable.
 
+= Use Cases =
+
+I see two cases where people will use code_swarm.  One is a casual, exploratory look at how a project is structured and who is working on what.
+
+ # Exploration: Viewing the history of a project. 
+  * Real-time rending is critical. 
+  * The less setup and configuration necessary the better. Sensible defaults
+ # Rendering: Creating a video of a project's history for sharing with others.  
+  * Expose all of the options, so that a user can customize the visualization to their liking
+  * Speed is nice, but not paramount
+
 = Data Input =
  * A standard XML schema for this project.
   * I suggest we base it around the loadRepEvents() format. - michael.ogawa
