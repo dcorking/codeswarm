@@ -1,3 +1,5 @@
+package codeswarm;
+
 /*
    Copyright 2008 Michael Ogawa
 
@@ -18,7 +20,9 @@
  */
 
 import java.awt.Color;
-import java.util.regex.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import processing.core.PApplet;
 import processing.core.PConstants;
 

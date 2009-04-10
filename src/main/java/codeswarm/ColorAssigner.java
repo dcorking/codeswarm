@@ -1,3 +1,5 @@
+package codeswarm;
+
 /*
    Copyright 2008 Michael Ogawa
 
@@ -19,7 +21,7 @@
 
 //not used: import processing.core.PApplet;
 import java.awt.Color;
-import java.util.*;
+import java.util.ArrayList;
 
 class ColorAssigner
 {

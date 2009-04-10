@@ -1,3 +1,5 @@
+package codeswarm.repositoryevents;
+
 /* This file is part of code_swarm.
 
 code_swarm is free software: you can redistribute it and/or modify
@@ -13,11 +15,11 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with code_swarm.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.codeswarm.repositoryevents;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
@@ -26,6 +28,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -44,7 +47,7 @@ public class CodeSwarmEventsSerializer {
     }
     /**
      * actually serializes the list to the file denoted by pathToFile
-     * @param pathToFile the path to the xml file to serialize to. 
+     * @param pathToFile the path to the xml file to serialize to.
      *          It gets created if it doesn't exist.
      * @throws javax.xml.parsers.ParserConfigurationException
      *          When the serialization failed
@@ -76,5 +79,5 @@ public class CodeSwarmEventsSerializer {
         t.transform(new DOMSource(d), result);
         out.close();
     }
-    
+
 }

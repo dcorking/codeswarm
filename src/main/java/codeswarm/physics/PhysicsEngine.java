@@ -1,3 +1,5 @@
+package codeswarm;
+
 /**
  * Copyright 2008 code_swarm project team
  *
@@ -18,6 +20,7 @@
  */
 
 import java.util.Properties;
+
 import javax.vecmath.Vector2f;
 
 /**
@@ -25,7 +28,7 @@ import javax.vecmath.Vector2f;
  *
  * @note Need to be derived to define force calculation algorithms between Nodes
  * @note Need to use the constructor to apply some configuration options
- * 
+ *
  * @note For portability, no Processing library should be use there, only standard Java packages
  */
 public interface PhysicsEngine
@@ -35,96 +38,96 @@ public interface PhysicsEngine
    * @param p Properties file
    */
   public void setup (Properties p);
-  
+
   /**
    * Method that allows Physics Engine to initialize the Frame
-   * 
+   *
    */
   public void initializeFrame();
-  
+
   /**
    * Method that allows Physics Engine to finalize the Frame
-   * 
+   *
    */
   public void finalizeFrame();
-  
+
   /**
    * Method that allows Physics Engine to modify Speed / Position during the relax phase.
-   * 
+   *
    * @param edge the node to which the force apply
-   * 
+   *
    * @Note Standard physics is "Position Variation = Speed x Duration" with a convention of "Duration=1" between to frames
    */
   public void onRelaxEdge(code_swarm.Edge edge);
-  
+
   /**
    * Method that allows Physics Engine to modify Speed / Position during the relax phase.
-   * 
+   *
    * @param fNode the node to which the force apply
-   * 
+   *
    * @Note Standard physics is "Position Variation = Speed x Duration" with a convention of "Duration=1" between to frames
    */
   public void onRelaxNode(code_swarm.FileNode fNode);
-  
+
   /**
    * Method that allows Physics Engine to modify Speed / Position during the relax phase.
-   * 
+   *
    * @param pNode the node to which the force apply
-   * 
+   *
    * @Note Standard physics is "Position Variation = Speed x Duration" with a convention of "Duration=1" between to frames
    */
   public void onRelaxPerson(code_swarm.PersonNode pNode);
-  
+
   /**
    * Method that allows Physics Engine to modify Speed / Position during the update phase.
-   * 
+   *
    * @param edge the node to which the force apply
-   * 
+   *
    * @Note Standard physics is "Position Variation = Speed x Duration" with a convention of "Duration=1" between to frames
    */
   public void onUpdateEdge(code_swarm.Edge edge);
-  
+
   /**
    * Method that allows Physics Engine to modify Speed / Position during the update phase.
-   * 
+   *
    * @param fNode the node to which the force apply
-   * 
+   *
    * @Note Standard physics is "Position Variation = Speed x Duration" with a convention of "Duration=1" between to frames
    */
   public void onUpdateNode(code_swarm.FileNode fNode);
-  
+
   /**
    * Method that allows Physics Engine to modify Speed / Position during the update phase.
-   * 
+   *
    * @param pNode the node to which the force apply
-   * 
+   *
    * @Note Standard physics is "Position Variation = Speed x Duration" with a convention of "Duration=1" between to frames
    */
   public void onUpdatePerson(code_swarm.PersonNode pNode);
-  
+
   /**
-   * 
+   *
    * @return Vector2f vector holding the starting location for a Person Node
    */
   public Vector2f pStartLocation();
-  
+
   /**
-   * 
+   *
    * @return Vector2f vector holding the starting location for a File Node
    */
   public Vector2f fStartLocation();
-  
+
   /**
-   * 
+   *
    * @return Vector2f vector holding the starting velocity for a Person Node
    */
   public Vector2f pStartVelocity(float mass);
-  
+
   /**
-   * 
+   *
    * @return Vector2f vector holding the starting velocity for a File Node
    */
   public Vector2f fStartVelocity(float mass);
-  
+
 }
 

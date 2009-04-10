@@ -1,3 +1,5 @@
+package codeswarm;
+
 /*
    Copyright 2008 Michael Ogawa
 
@@ -23,7 +25,7 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Properties;
 
-import org.codeswarm.repositoryevents.EventList;
+import codeswarm.repositoryevents.EventList;
 
 /**
  * @author Michael Ogawa
