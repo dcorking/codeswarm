@@ -1,3 +1,5 @@
+package codeswarm;
+
 /**
  * Copyright 2008 code_swarm project team
  *
@@ -18,18 +20,19 @@
  */
 
 import java.util.Properties;
+
 import javax.vecmath.Vector2f;
 
 /**
  * @brief Physics Engine implementation.  In essence, people bounce around.  Nodes are attracted to the people.
- * 
+ *
  * @see PhysicsEngine for interface information
  * @author Desmond Daignault  <nawglan at gmail>
  */
 public class PhysicsEngineMaxwellsDemon implements PhysicsEngine
 {
   /**
-   * 
+   *
    */
   private static final long serialVersionUID = 1L;
 
@@ -65,7 +68,7 @@ public class PhysicsEngineMaxwellsDemon implements PhysicsEngine
   }
 
   /**
-   * 
+   *
    * @param opened Is door open or closed?
    */
   private void drawWall() {
@@ -107,8 +110,8 @@ public class PhysicsEngineMaxwellsDemon implements PhysicsEngine
   /**
    * Calculate the attractive/repulsive force between a person and one of its file
    * along their link (the edge).
-   * 
-   * @param edge the link between a person and one of its file 
+   *
+   * @param edge the link between a person and one of its file
    * @return Vector2f force calculated between those two nodes
    */
   private Vector2f calculateForceAlongAnEdge( code_swarm.Edge edge )
@@ -127,19 +130,19 @@ public class PhysicsEngineMaxwellsDemon implements PhysicsEngine
       // force ponderation using a re-mapping life from 0-255 scale to 0-1.0 range
       // This allows nodes to drift apart as their life decreases.
       deltaDistance *= ((float)edge.life / edge.LIFE_INIT);
-      
+
       // force projection onto x and y axis
       tforce.scale(deltaDistance);
-      
+
       force.set(tforce);
     }
 
     return force;
   }
-  
+
   /**
    * Calculate the repulsive force between two similar file nodes.
-   * 
+   *
    * @param nodeA
    * @param nodeB
    * @return Vector2f force calculated between those two nodes
@@ -157,7 +160,7 @@ public class PhysicsEngineMaxwellsDemon implements PhysicsEngine
     distance = normVec.lengthSquared();
     /**
      * If there is a Collision.  This is assuming a radius of zero.
-     * if (lensq == (radius1 + radius2)) is what to use if we have radius 
+     * if (lensq == (radius1 + radius2)) is what to use if we have radius
      * could use touches for files and edge_length for people?
      */
     if (distance == (nodeA.touches + nodeB.touches)) {
@@ -176,7 +179,7 @@ public class PhysicsEngineMaxwellsDemon implements PhysicsEngine
   /**
    * Calculate the repulsive force between two similar person nodes
    * People ricochet off of each other and walls.
-   * 
+   *
    * @param nodeA
    * @param nodeB
    * @return Vector2f force calculated between those two nodes
@@ -263,10 +266,10 @@ public class PhysicsEngineMaxwellsDemon implements PhysicsEngine
 
   /**
    * Apply force to a node, converting acceleration to speed.
-   * 
+   *
    * @param node Node the node to which the force apply
    * @param force force a force Vector representing the force on a node
-   * 
+   *
    * TODO: does force should be a property of the node (or not?)
    */
   private void applyForceTo( code_swarm.Node node, Vector2f force )
@@ -286,7 +289,7 @@ public class PhysicsEngineMaxwellsDemon implements PhysicsEngine
 
   /**
    * Apply force to a node, converting speed to position.
-   * 
+   *
    * @param node the node to which the force apply
     */
   private void applySpeedTo( code_swarm.Node node )
@@ -296,11 +299,11 @@ public class PhysicsEngineMaxwellsDemon implements PhysicsEngine
       Vector2f mag = new Vector2f(node.mSpeed.x / node.maxSpeed, node.mSpeed.y / node.maxSpeed);
       node.mSpeed.scale(1/mag.lengthSquared());
     }
-    
+
     // This block convert Speed to Position
     node.mPosition.add(node.mSpeed);
   }
-  
+
   private boolean nearDoor(code_swarm.Node node) {
     if (node.mPosition.x > (midWayX - doorWayLeft) && node.mPosition.x < (midWayX + doorWayRight)) {
       if (node.mPosition.y >= startDoorY && node.mPosition.y <= midWayY) {
@@ -309,7 +312,7 @@ public class PhysicsEngineMaxwellsDemon implements PhysicsEngine
     }
     return false;
   }
-  
+
   private void constrainNode(code_swarm.Node node, boolean rightSide) {
     if (nearDoor(node)) {
       if (doorOpen) {
@@ -329,7 +332,7 @@ public class PhysicsEngineMaxwellsDemon implements PhysicsEngine
       }
     }
   }
-  
+
   private boolean whichSide(code_swarm.Node node) {
     // which half of the screen are we on?
     // true = right side
@@ -345,17 +348,17 @@ public class PhysicsEngineMaxwellsDemon implements PhysicsEngine
    */
   public void initializeFrame() {
     doorOpen = false;
-    
+
     for (code_swarm.PersonNode p : code_swarm.getLivingPeople()) {
       if (p.mSpeed.x < 0.0f && nearDoor(p)) {
         doorOpen = true;
         break;
       }
     }
-    
+
     drawWall();
   }
-  
+
   /**
    * close the door until next iteration
    */
@@ -365,9 +368,9 @@ public class PhysicsEngineMaxwellsDemon implements PhysicsEngine
 
   /**
    * Method that allows Physics Engine to modify forces between files and people during the relax stage
-   * 
+   *
    * @param edge the edge to which the force apply (both ends)
-   * 
+   *
    * @Note Standard physics is "Position Variation = Speed x Duration" with a convention of "Duration=1" between to frames
    */
   public void onRelaxEdge(code_swarm.Edge edge) {
@@ -391,9 +394,9 @@ public class PhysicsEngineMaxwellsDemon implements PhysicsEngine
 
   /**
    * Method that allows Physics Engine to modify Speed / Position during the update phase.
-   * 
+   *
    * @param edge the node to which the force apply
-   * 
+   *
    * @Note Standard physics is "Position Variation = Speed x Duration" with a convention of "Duration=1" between to frames
    */
   public void onUpdateEdge(code_swarm.Edge edge) {
@@ -402,9 +405,9 @@ public class PhysicsEngineMaxwellsDemon implements PhysicsEngine
 
   /**
    * Method that allows Physics Engine to modify Speed / Position during the relax phase.
-   * 
+   *
    * @param fNode the node to which the force apply
-   * 
+   *
    * @Note Standard physics is "Position Variation = Speed x Duration" with a convention of "Duration=1" between to frames
    */
   public void onRelaxNode(code_swarm.FileNode fNode ) {
@@ -427,16 +430,16 @@ public class PhysicsEngineMaxwellsDemon implements PhysicsEngine
 
   /**
    * Method that allows Physics Engine to modify Speed / Position during the update phase.
-   * 
+   *
    * @param fNode the node to which the force apply
-   * 
+   *
    * @Note Standard physics is "Position Variation = Speed x Duration" with a convention of "Duration=1" between to frames
    */
   public void onUpdateNode(code_swarm.FileNode fNode) {
     // Apply Speed to Position on nodes
     applySpeedTo(fNode);
     constrainNode(fNode, whichSide(fNode)); // Keep it in bounds.
-    
+
     // shortening life
     fNode.decay();
 
@@ -446,9 +449,9 @@ public class PhysicsEngineMaxwellsDemon implements PhysicsEngine
 
   /**
    * Method that allows Physics Engine to modify Speed / Position during the relax phase.
-   * 
+   *
    * @param pNode the node to which the force apply
-   * 
+   *
    * @Note Standard physics is "Position Variation = Speed x Duration" with a convention of "Duration=1" between to frames
    */
   public void onRelaxPerson(code_swarm.PersonNode pNode) {
@@ -472,14 +475,14 @@ public class PhysicsEngineMaxwellsDemon implements PhysicsEngine
 
   /**
    * Method that allows Physics Engine to modify Speed / Position during the update phase.
-   * 
+   *
    * @param pNode the node to which the force apply
-   * 
+   *
    * @Note Standard physics is "Position Variation = Speed x Duration" with a convention of "Duration=1" between to frames
    */
   public void onUpdatePerson(code_swarm.PersonNode pNode) {
     boolean rightSide = whichSide(pNode);
-    
+
     applySpeedTo(pNode);
 
     // Check for collisions with neighbors.
@@ -535,7 +538,7 @@ public class PhysicsEngineMaxwellsDemon implements PhysicsEngine
       //  |  |  |
       //  |  |  |
       //  |  |  |
-      
+
       if (rightSide) {
         if ((pNode.mPosition.x < (midWayX + pNode.mass) && pNode.mSpeed.x < 0.0f) || (pNode.mPosition.x > (code_swarm.width - pNode.mass) && pNode.mSpeed.x > 0.0f)) {
           pNode.mSpeed.x = -pNode.mSpeed.x;
@@ -562,7 +565,7 @@ public class PhysicsEngineMaxwellsDemon implements PhysicsEngine
     //
     //
     //  _______
-    
+
     if ((pNode.mPosition.y < pNode.mass && pNode.mSpeed.y < 0.0f) || ((pNode.mPosition.y > (code_swarm.height - pNode.mass) && pNode.mSpeed.y > 0.0f))) {
       pNode.mSpeed.y = -pNode.mSpeed.y;
       int i = 0;
@@ -578,40 +581,40 @@ public class PhysicsEngineMaxwellsDemon implements PhysicsEngine
   }
 
   /**
-   * 
+   *
    * @return Vector2f vector holding the starting location for a Person Node
    */
   public Vector2f pStartLocation() {
     float x = (float)Math.random() * midWayX + midWayX;
     float y = (float)Math.random() * code_swarm.height;
-    
+
     constrain(x, (midWayX + 10), (code_swarm.width - 10));
     constrain(y, 10, (code_swarm.height - 10));
-    
+
     Vector2f vec = new Vector2f(x, y);
 
     return vec;
   }
 
   /**
-   * 
+   *
    * @return Vector2f vector holding the starting location for a File Node
    */
   public Vector2f fStartLocation() {
     float x = (float)Math.random() * midWayX + midWayX;
     float y = (float)Math.random() * code_swarm.height;
-    
+
     constrain(x, (midWayX + 10), (code_swarm.width - 10));
     constrain(y, 10, (code_swarm.height - 10));
-    
+
     Vector2f vec = new Vector2f(x, y);
 
     return vec;
   }
 
   /**
-   * 
-   * @param mass 
+   *
+   * @param mass
    * @return Vector2f vector holding the starting velocity for a Person Node
    */
   public Vector2f pStartVelocity(float mass) {
@@ -620,8 +623,8 @@ public class PhysicsEngineMaxwellsDemon implements PhysicsEngine
   }
 
   /**
-   * 
-   * @param mass 
+   *
+   * @param mass
    * @return Vector2f vector holding the starting velocity for a File Node
    */
   public Vector2f fStartVelocity(float mass) {

@@ -1,3 +1,5 @@
+package codeswarm.repository.svn;
+
 /* This file is part of code_swarm.
 
 code_swarm is free software: you can redistribute it and/or modify
@@ -15,11 +17,7 @@ along with code_swarm.  If not, see <http://www.gnu.org/licenses/>.
  */
 // Some parts of this code have been taken from SVNKit's example-code.
 // See https://wiki.svnkit.com/Printing_Out_Repository_History
-package org.codeswarm.repository.svn;
 
-
-import org.codeswarm.repositoryevents.CodeSwarmEventsSerializer;
-import org.codeswarm.repositoryevents.Event;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Set;
@@ -27,13 +25,18 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
+
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
-import org.codeswarm.repositoryevents.EventList;
+
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNLogEntry;
 import org.tmatesoft.svn.core.SVNLogEntryPath;
+
+import codeswarm.repositoryevents.CodeSwarmEventsSerializer;
+import codeswarm.repositoryevents.Event;
+import codeswarm.repositoryevents.EventList;
 
 /**
  * Performs the repository lookup and serializes the data.
@@ -78,7 +81,7 @@ public class SVNHistory extends AbstractSVNHistoryVisitor {
      * looks up the cache. Stops proceeding if a cached version for this
      * repository was found.
      * @param pRevision the latest repository revision.
-     * @return false if a cached version was found, true if the history shall 
+     * @return false if a cached version was found, true if the history shall
      * be fetched from repository.
      */
     public boolean handleFetchingLatestRepositoryRevision(Long pRevision) {
@@ -110,7 +113,7 @@ public class SVNHistory extends AbstractSVNHistoryVisitor {
         while(i.hasNext()){
             String key = (String)i.next();
             SVNLogEntryPath entryPath = (SVNLogEntryPath) logEntry.getChangedPaths().get(key);
-            list.addEvent(new Event(entryPath.getPath(),logEntry.getDate().getTime(),logEntry.getAuthor()));    
+            list.addEvent(new Event(entryPath.getPath(),logEntry.getDate().getTime(),logEntry.getAuthor()));
             if(LOGGER.isLoggable(Level.FINE)){
                 LOGGER.log(Level.FINE, "fetched entry {0}\n date {1}\n rev. {2}\n--", new Object[]{entryPath.getPath(),logEntry.getDate(), logEntry.getRevision()});
             }
@@ -132,11 +135,11 @@ public class SVNHistory extends AbstractSVNHistoryVisitor {
                 SVNLogEntryPath entryPath = (SVNLogEntryPath) logEntry.getChangedPaths().get(changedPaths.next());
                 /*
                  * SVNLogEntryPath.getPath returns the changed path itself;
-                 * 
+                 *
                  * SVNLogEntryPath.getType returns a charecter describing
                  * how the path was changed ('A' - added, 'D' - deleted or
                  * 'M' - modified);
-                 * 
+                 *
                  * If the path was copied from another one (branched) then
                  * SVNLogEntryPath.getCopyPath &
                  * SVNLogEntryPath.getCopyRevision tells where it was copied
@@ -148,7 +151,7 @@ public class SVNHistory extends AbstractSVNHistoryVisitor {
                         copyPathInfo.append("(from ").append(entryPath.getCopyPath());
                         copyPathInfo.append(" rev ").append(entryPath.getCopyRevision()).append(")");
                     }
-                    LOGGER.log(Level.FINE,"entry: {0} {1} {2}", 
+                    LOGGER.log(Level.FINE,"entry: {0} {1} {2}",
                             new Object[]{entryPath.getType(),entryPath.getPath(),copyPathInfo.toString()});
                 }
             }
@@ -159,7 +162,7 @@ public class SVNHistory extends AbstractSVNHistoryVisitor {
      */
     public void finishLogEntries() {
         try {
-            CodeSwarmEventsSerializer serializer = 
+            CodeSwarmEventsSerializer serializer =
                     new CodeSwarmEventsSerializer(list);
             serializer.serialize(getFilePath());
         } catch (ParserConfigurationException ex) {

@@ -1,3 +1,5 @@
+package codeswarm;
+
 /* This file is part of code_swarm.
 
 code_swarm is free software: you can redistribute it and/or modify
@@ -14,38 +16,39 @@ You should have received a copy of the GNU General Public License
 along with code_swarm.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.codeswarm.repository.svn.SVNHistory;
 import java.awt.Toolkit;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.logging.Level;
 import java.util.logging.LogManager;
+import java.util.logging.Logger;
 import java.util.prefs.Preferences;
-import javax.swing.JRootPane;
+
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+
+import codeswarm.repository.svn.SVNHistory;
 
 /**
  * This is the main entry point for the application.<br />
  * This version is a fast implementation of a user-interface.<br />
  * Further versions should be improved and include stuff like i18n.<br />
- * The usage of Swing-Application-Framework and Beans-Binding could help in the 
+ * The usage of Swing-Application-Framework and Beans-Binding could help in the
  * future.<br />
- * 
+ *
  * NOTE: This dialog was made using Netbeans. Modifications should be done with
  * Netbeans (at least 6.0) to reflect them to the corresponding netbeans-form.
  * @author tpraxl
  */
 public class MainView extends javax.swing.JFrame {
-    // This class couples SVNHistory too tightly. 
-    // TODO The concrete History-Implementation should be created by a Factory 
+    // This class couples SVNHistory too tightly.
+    // TODO The concrete History-Implementation should be created by a Factory
     // depending on the URL and/or other settings.
-    
+
     /**
-     * initializes the Dialog and sets the dialog-values according to the 
+     * initializes the Dialog and sets the dialog-values according to the
      * user's preferences (the last values entered).
      * @param args java arguments passed to the main method. The first parameter
      * will be passed to {@link code_swarm}. It specifies the config-file.
@@ -146,8 +149,8 @@ public class MainView extends javax.swing.JFrame {
 
     /**
      * gets called when the user presses the "Go"-Button.<br />
-     * It manages fetching the repository entries and serving it to 
-     * {@link code_swarm}. It starts code_swarm after fetching the repository 
+     * It manages fetching the repository entries and serving it to
+     * {@link code_swarm}. It starts code_swarm after fetching the repository
      * entries.
      * @param evt The ActionEvent from Swing
      */
@@ -189,7 +192,7 @@ private void clearCacheActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 }//GEN-LAST:event_clearCacheActionPerformed
 
     /**
-     * This is the main entry-point. It sets the native Look&Feel, creates and 
+     * This is the main entry-point. It sets the native Look&Feel, creates and
      * shows the MainView.
     * @param args the command line arguments. The first parameter
      * will be passed to {@link code_swarm}. It specifies the config-file.

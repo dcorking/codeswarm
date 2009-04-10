@@ -161,16 +161,15 @@
 				<configuration>
 					<aggregate>true</aggregate>
 					<linkXRef>false</linkXRef>
-					<targetJdk>1.5</targetJdk>
+					<targetJdk>1.6</targetJdk>
 				</configuration>
 			</plugin>
 		</plugins>
 	</reporting>
-	<modules>
-		<module>fileio</module>
-		<module>zip</module>
-		<module>image</module>
-	</modules>
+	<issueManagement>
+		<system>Google Code</system>
+		<url>http://code.google.com/p/codeswarm/issue/list</url>
+	</issueManagement>
 	<developers>
 		<developer>
 			<id>michael.ogawa</id>

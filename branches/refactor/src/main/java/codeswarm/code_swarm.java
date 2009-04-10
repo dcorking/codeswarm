@@ -1,3 +1,5 @@
+package codeswarm;
+
 /**
  * Copyright 2008 Michael Ogawa
  *
