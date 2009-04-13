@@ -1,4 +1,4 @@
-package codeswarm;
+package codeswarm.physics;
 
 /**
  * Copyright 2008 code_swarm project team
@@ -23,17 +23,20 @@ import java.util.Properties;
 
 import javax.vecmath.Vector2f;
 
+import codeswarm.Edge;
+import codeswarm.FileNode;
+import codeswarm.Node;
+import codeswarm.PersonNode;
+import codeswarm.code_swarm;
+
 /**
  * @brief Physics Engine implementation.  In essence, people bounce around.  Nodes are attracted to the people.
  *
  * @see PhysicsEngine for interface information
  * @author Desmond Daignault  <nawglan at gmail>
  */
-public class PhysicsEngineMaxwellsDemon implements PhysicsEngine
+public class PhysicsEngineMaxwellsDemon extends PhysicsEngine
 {
-  /**
-   *
-   */
   private static final long serialVersionUID = 1L;
 
   private Properties cfg;
@@ -48,9 +51,12 @@ public class PhysicsEngineMaxwellsDemon implements PhysicsEngine
   private int doorWayLeft;
   private int doorWayRight;
 
+  public PhysicsEngineMaxwellsDemon(code_swarm drawable) {
+	  super(drawable);
+  }
 
   /**
-   * Method for initializing parameters.
+   * Method for initialising parameters.
    * @param p Properties from the config file.
    */
   public void setup (Properties p)
@@ -59,8 +65,8 @@ public class PhysicsEngineMaxwellsDemon implements PhysicsEngine
     DRAG = Float.parseFloat(cfg.getProperty("drag","0.00001"));
     doorSize = Integer.parseInt(cfg.getProperty("doorSize","100"));
     doorOpen = false;
-    midWayX = code_swarm.width / 2;
-    midWayY = code_swarm.height / 2;
+    midWayX = code_swarm.getCodeSwarmWidth() / 2;
+    midWayY = code_swarm.getCodeSwarmHeight() / 2;
     startDoorY = midWayY - doorSize;
     doorCenter = new Vector2f(midWayX, midWayY);
     doorWayLeft = Integer.parseInt(cfg.getProperty("doorWayLeft","35"));
@@ -73,21 +79,21 @@ public class PhysicsEngineMaxwellsDemon implements PhysicsEngine
    */
   private void drawWall() {
     // Draw the wall.
-    int midWayX = code_swarm.width / 2;
-    int midWayY = code_swarm.height / 2;
+    int midWayX = code_swarm.getCodeSwarmWidth() / 2;
+    int midWayY = code_swarm.getCodeSwarmHeight() / 2;
     int startDoorY = midWayY - doorSize;
 
     // draw top of wall
-    code_swarm.utils.drawLine(midWayX, 0, midWayX, midWayY, 255, 255, 255);
+    drawableArea.drawLine(midWayX, 0, midWayX, midWayY, 255, 255, 255);
 
     // draw door
     if (doorOpen) {
-      code_swarm.utils.drawLine(midWayX, startDoorY, midWayX, midWayY, 0, 255, 0);
+    	drawableArea.drawLine(midWayX, startDoorY, midWayX, midWayY, 0, 255, 0);
     } else {
-      code_swarm.utils.drawLine(midWayX, startDoorY, midWayX, midWayY, 255, 0, 0);
+    	drawableArea.drawLine(midWayX, startDoorY, midWayX, midWayY, 255, 0, 0);
     }
     // draw bottom of wall
-    code_swarm.utils.drawLine(midWayX, midWayY, midWayX, code_swarm.height, 255, 255, 255);
+    drawableArea.drawLine(midWayX, midWayY, midWayX, code_swarm.getCodeSwarmHeight(), 255, 255, 255);
   }
 
   /**
@@ -114,7 +120,7 @@ public class PhysicsEngineMaxwellsDemon implements PhysicsEngine
    * @param edge the link between a person and one of its file
    * @return Vector2f force calculated between those two nodes
    */
-  private Vector2f calculateForceAlongAnEdge( code_swarm.Edge edge )
+  private Vector2f calculateForceAlongAnEdge(Edge edge)
   {
     float distance;
     float deltaDistance;
@@ -122,14 +128,14 @@ public class PhysicsEngineMaxwellsDemon implements PhysicsEngine
     Vector2f tforce = new Vector2f();
 
     // distance calculation
-    tforce.sub(edge.nodeTo.mPosition, edge.nodeFrom.mPosition);
+    tforce.sub(edge.getNodeTo().getMPosition(), edge.getNodeFrom().getMPosition());
     distance = tforce.length();
     if (distance > 0) {
       // force calculation (increase when distance is different from targeted len")
-      deltaDistance = (edge.len - distance) / (distance * 3);
+      deltaDistance = (edge.getLen() - distance) / (distance * 3);
       // force ponderation using a re-mapping life from 0-255 scale to 0-1.0 range
       // This allows nodes to drift apart as their life decreases.
-      deltaDistance *= ((float)edge.life / edge.LIFE_INIT);
+      deltaDistance *= ((float)edge.getLife() / edge.getLifeInit());
 
       // force projection onto x and y axis
       tforce.scale(deltaDistance);
@@ -147,7 +153,7 @@ public class PhysicsEngineMaxwellsDemon implements PhysicsEngine
    * @param nodeB
    * @return Vector2f force calculated between those two nodes
    */
-  private Vector2f calculateForceBetweenfNodes( code_swarm.FileNode nodeA, code_swarm.FileNode nodeB )
+  private Vector2f calculateForceBetweenfNodes(FileNode nodeA, FileNode nodeB)
   {
     float distance;
     Vector2f force = new Vector2f();
@@ -156,14 +162,14 @@ public class PhysicsEngineMaxwellsDemon implements PhysicsEngine
     /**
      * Get the distance between nodeA and nodeB
      */
-    normVec.sub(nodeA.mPosition, nodeB.mPosition);
+    normVec.sub(nodeA.getMPosition(), nodeB.getMPosition());
     distance = normVec.lengthSquared();
     /**
      * If there is a Collision.  This is assuming a radius of zero.
      * if (lensq == (radius1 + radius2)) is what to use if we have radius
      * could use touches for files and edge_length for people?
      */
-    if (distance == (nodeA.touches + nodeB.touches)) {
+    if (distance == (nodeA.getTouches() + nodeB.getTouches())) {
       force.set(0.01f* (((float)Math.random()*2)-1), (0.01f* ((float)Math.random()*2)-1));
     } else if (distance < 10000) {
       /**
@@ -184,77 +190,77 @@ public class PhysicsEngineMaxwellsDemon implements PhysicsEngine
    * @param nodeB
    * @return Vector2f force calculated between those two nodes
    */
-  private Vector2f calculateForceBetweenpNodes( code_swarm.PersonNode nodeA, code_swarm.PersonNode nodeB )
+  private Vector2f calculateForceBetweenpNodes(PersonNode nodeA, PersonNode nodeB)
   {
     Vector2f force = new Vector2f();
     Vector2f tmp = new Vector2f();
 
-    tmp.sub(nodeA.mPosition, nodeB.mPosition);
+    tmp.sub(nodeA.getMPosition(), nodeB.getMPosition());
     double distance = Math.sqrt(tmp.lengthSquared());
-    if (distance <= (nodeA.mass + nodeB.mass)) {
-      if (nodeA.mSpeed.x > 0 && nodeA.mSpeed.y > 0) {          // Node A down and right
-        if (nodeB.mSpeed.x < 0 && nodeB.mSpeed.y > 0) {        // Node B down and left
-          nodeA.mSpeed.x *= -1;
-          nodeB.mSpeed.x *= -1;
-        } else if (nodeB.mSpeed.x > 0 && nodeB.mSpeed.y < 0) { // Node B up and right
-          nodeA.mSpeed.y *= -1;
-          nodeB.mSpeed.y *= -1;
-        } else if (nodeB.mSpeed.x < 0 && nodeB.mSpeed.y < 0) { // Node B up and left
-          nodeA.mSpeed.negate();
-          nodeB.mSpeed.negate();
+    if (distance <= (nodeA.getMass() + nodeB.getMass())) {
+      if (nodeA.getMSpeed().x > 0 && nodeA.getMSpeed().y > 0) {          // Node A down and right
+        if (nodeB.getMSpeed().x < 0 && nodeB.getMSpeed().y > 0) {        // Node B down and left
+          nodeA.getMSpeed().x *= -1;
+          nodeB.getMSpeed().x *= -1;
+        } else if (nodeB.getMSpeed().x > 0 && nodeB.getMSpeed().y < 0) { // Node B up and right
+          nodeA.getMSpeed().y *= -1;
+          nodeB.getMSpeed().y *= -1;
+        } else if (nodeB.getMSpeed().x < 0 && nodeB.getMSpeed().y < 0) { // Node B up and left
+          nodeA.getMSpeed().negate();
+          nodeB.getMSpeed().negate();
         } else {                                               // Node B down and right
-          nodeB.mSpeed.x *= -1;
-          nodeA.mSpeed.x *= 2;
+          nodeB.getMSpeed().x *= -1;
+          nodeA.getMSpeed().x *= 2;
         }
-      } else if (nodeA.mSpeed.x > 0 && nodeA.mSpeed.y < 0) {   // Node A up and right
-        if (nodeB.mSpeed.x < 0 && nodeB.mSpeed.y > 0) {        // Node B down and left
-          nodeA.mSpeed.negate();
-          nodeB.mSpeed.negate();
-        } else if (nodeB.mSpeed.x > 0 && nodeB.mSpeed.y < 0) { // Node B up and right
-          nodeA.mSpeed.x *= -1;
-          nodeB.mSpeed.x *= 2;
-        } else if (nodeB.mSpeed.x < 0 && nodeB.mSpeed.y < 0) { // Node B up and left
-          nodeA.mSpeed.x *= -1;
-          nodeB.mSpeed.x *= -1;
+      } else if (nodeA.getMSpeed().x > 0 && nodeA.getMSpeed().y < 0) {   // Node A up and right
+        if (nodeB.getMSpeed().x < 0 && nodeB.getMSpeed().y > 0) {        // Node B down and left
+          nodeA.getMSpeed().negate();
+          nodeB.getMSpeed().negate();
+        } else if (nodeB.getMSpeed().x > 0 && nodeB.getMSpeed().y < 0) { // Node B up and right
+          nodeA.getMSpeed().x *= -1;
+          nodeB.getMSpeed().x *= 2;
+        } else if (nodeB.getMSpeed().x < 0 && nodeB.getMSpeed().y < 0) { // Node B up and left
+          nodeA.getMSpeed().x *= -1;
+          nodeB.getMSpeed().x *= -1;
         } else {                                               // Node B down and right
-          nodeA.mSpeed.y *= -1;
-          nodeB.mSpeed.y *= -1;
+          nodeA.getMSpeed().y *= -1;
+          nodeB.getMSpeed().y *= -1;
         }
-      } else if (nodeA.mSpeed.x < 0 && nodeA.mSpeed.y > 0) {   // Node A down and left
-        if (nodeB.mSpeed.x < 0 && nodeB.mSpeed.y > 0) {        // Node B down and left
-          nodeB.mSpeed.x *= -1;
-          nodeA.mSpeed.x *= 2;
-        } else if (nodeB.mSpeed.x > 0 && nodeB.mSpeed.y < 0) { // Node B up and right
-          nodeA.mSpeed.negate();
-          nodeB.mSpeed.negate();
-        } else if (nodeB.mSpeed.x < 0 && nodeB.mSpeed.y < 0) { // Node B up and left
-          nodeA.mSpeed.y *= -1;
-          nodeB.mSpeed.y *= -1;
+      } else if (nodeA.getMSpeed().x < 0 && nodeA.getMSpeed().y > 0) {   // Node A down and left
+        if (nodeB.getMSpeed().x < 0 && nodeB.getMSpeed().y > 0) {        // Node B down and left
+          nodeB.getMSpeed().x *= -1;
+          nodeA.getMSpeed().x *= 2;
+        } else if (nodeB.getMSpeed().x > 0 && nodeB.getMSpeed().y < 0) { // Node B up and right
+          nodeA.getMSpeed().negate();
+          nodeB.getMSpeed().negate();
+        } else if (nodeB.getMSpeed().x < 0 && nodeB.getMSpeed().y < 0) { // Node B up and left
+          nodeA.getMSpeed().y *= -1;
+          nodeB.getMSpeed().y *= -1;
         } else {                                               // Node B down and right
-          nodeA.mSpeed.x *= -1;
-          nodeB.mSpeed.x *= -1;
+          nodeA.getMSpeed().x *= -1;
+          nodeB.getMSpeed().x *= -1;
         }
       } else {                                                 // Node A up and left
-        if (nodeB.mSpeed.x < 0 && nodeB.mSpeed.y > 0) {        // Node B down and left
-          nodeA.mSpeed.y *= -1;
-          nodeB.mSpeed.y *= -1;
-        } else if (nodeB.mSpeed.x > 0 && nodeB.mSpeed.y < 0) { // Node B up and right
-          nodeA.mSpeed.x *= -1;
-          nodeB.mSpeed.x *= -1;
-        } else if (nodeB.mSpeed.x < 0 && nodeB.mSpeed.y < 0) { // Node B up and left
-          nodeA.mSpeed.x *= -1;
-          nodeB.mSpeed.x *= 2;
+        if (nodeB.getMSpeed().x < 0 && nodeB.getMSpeed().y > 0) {        // Node B down and left
+          nodeA.getMSpeed().y *= -1;
+          nodeB.getMSpeed().y *= -1;
+        } else if (nodeB.getMSpeed().x > 0 && nodeB.getMSpeed().y < 0) { // Node B up and right
+          nodeA.getMSpeed().x *= -1;
+          nodeB.getMSpeed().x *= -1;
+        } else if (nodeB.getMSpeed().x < 0 && nodeB.getMSpeed().y < 0) { // Node B up and left
+          nodeA.getMSpeed().x *= -1;
+          nodeB.getMSpeed().x *= 2;
         } else {                                               // Node B down and right
-          nodeA.mSpeed.negate();
-          nodeB.mSpeed.negate();
+          nodeA.getMSpeed().negate();
+          nodeB.getMSpeed().negate();
         }
       }
-      while (distance <= (nodeA.mass + nodeB.mass)) {
+      while (distance <= (nodeA.getMass() + nodeB.getMass())) {
         applySpeedTo(nodeA);
         constrainNode(nodeA, whichSide(nodeA));
         applySpeedTo(nodeB);
         constrainNode(nodeB, whichSide(nodeB));
-        tmp.sub(nodeA.mPosition, nodeB.mPosition);
+        tmp.sub(nodeA.getMPosition(), nodeB.getMPosition());
         distance = Math.sqrt(tmp.lengthSquared());
       }
     }
@@ -272,7 +278,7 @@ public class PhysicsEngineMaxwellsDemon implements PhysicsEngine
    *
    * TODO: does force should be a property of the node (or not?)
    */
-  private void applyForceTo( code_swarm.Node node, Vector2f force )
+  private void applyForceTo(Node node, Vector2f force)
   {
     double dlen;
     Vector2f mod = new Vector2f(force);
@@ -282,8 +288,8 @@ public class PhysicsEngineMaxwellsDemon implements PhysicsEngine
      */
     dlen = mod.length();
     if (dlen > 0) {
-      mod.scale(node.mass);
-      node.mSpeed.add(mod);
+      mod.scale(node.getMass());
+      node.getMSpeed().add(mod);
     }
   }
 
@@ -292,51 +298,51 @@ public class PhysicsEngineMaxwellsDemon implements PhysicsEngine
    *
    * @param node the node to which the force apply
     */
-  private void applySpeedTo( code_swarm.Node node )
+  private void applySpeedTo(Node node)
   {
     // This block enforces a maximum absolute velocity.
-    if (node.mSpeed.length() > node.maxSpeed) {
-      Vector2f mag = new Vector2f(node.mSpeed.x / node.maxSpeed, node.mSpeed.y / node.maxSpeed);
-      node.mSpeed.scale(1/mag.lengthSquared());
+    if (node.getMSpeed().length() > node.getMaxSpeed()) {
+      Vector2f mag = new Vector2f(node.getMSpeed().x / node.getMaxSpeed(), node.getMSpeed().y / node.getMaxSpeed());
+      node.getMSpeed().scale(1/mag.lengthSquared());
     }
 
     // This block convert Speed to Position
-    node.mPosition.add(node.mSpeed);
+    node.getMPosition().add(node.getMSpeed());
   }
 
-  private boolean nearDoor(code_swarm.Node node) {
-    if (node.mPosition.x > (midWayX - doorWayLeft) && node.mPosition.x < (midWayX + doorWayRight)) {
-      if (node.mPosition.y >= startDoorY && node.mPosition.y <= midWayY) {
+  private boolean nearDoor(Node node) {
+    if (node.getMPosition().x > (midWayX - doorWayLeft) && node.getMPosition().x < (midWayX + doorWayRight)) {
+      if (node.getMPosition().y >= startDoorY && node.getMPosition().y <= midWayY) {
         return true;
       }
     }
     return false;
   }
 
-  private void constrainNode(code_swarm.Node node, boolean rightSide) {
+  private void constrainNode(Node node, boolean rightSide) {
     if (nearDoor(node)) {
       if (doorOpen) {
-        node.mPosition.set(constrain(node.mPosition.x, 0.0f, (float)code_swarm.width),constrain(node.mPosition.y, 0.0f, (float)code_swarm.height));
+        node.getMPosition().set(constrain(node.getMPosition().x, 0.0f, (float)code_swarm.getCodeSwarmWidth()),constrain(node.getMPosition().y, 0.0f, (float)code_swarm.getCodeSwarmHeight()));
       } else {
         if (rightSide) {
-          node.mPosition.set(constrain(node.mPosition.x, (float)(midWayX + 8), (float)code_swarm.width),constrain(node.mPosition.y, 0.0f, (float)code_swarm.height));
+          node.getMPosition().set(constrain(node.getMPosition().x, (float)(midWayX + 8), (float)code_swarm.getCodeSwarmWidth()),constrain(node.getMPosition().y, 0.0f, (float)code_swarm.getCodeSwarmHeight()));
         } else {
-          node.mPosition.set(constrain(node.mPosition.x, 0.0f, (float)(midWayX - 8)),constrain(node.mPosition.y, 0.0f, (float)code_swarm.height));
+          node.getMPosition().set(constrain(node.getMPosition().x, 0.0f, (float)(midWayX - 8)),constrain(node.getMPosition().y, 0.0f, (float)code_swarm.getCodeSwarmHeight()));
         }
       }
     } else { // not near the door.
       if (rightSide) {
-        node.mPosition.set(constrain(node.mPosition.x, (float)(midWayX + 8), (float)code_swarm.width),constrain(node.mPosition.y, 0.0f, (float)code_swarm.height));
+        node.getMPosition().set(constrain(node.getMPosition().x, (float)(midWayX + 8), (float)code_swarm.getCodeSwarmWidth()),constrain(node.getMPosition().y, 0.0f, (float)code_swarm.getCodeSwarmHeight()));
       } else {
-        node.mPosition.set(constrain(node.mPosition.x, 0.0f, (float)(midWayX - 8)),constrain(node.mPosition.y, 0.0f, (float)code_swarm.height));
+        node.getMPosition().set(constrain(node.getMPosition().x, 0.0f, (float)(midWayX - 8)),constrain(node.getMPosition().y, 0.0f, (float)code_swarm.getCodeSwarmHeight()));
       }
     }
   }
 
-  private boolean whichSide(code_swarm.Node node) {
+  private boolean whichSide(Node node) {
     // which half of the screen are we on?
     // true = right side
-    return (node.mPosition.x >= midWayX);
+    return (node.getMPosition().x >= midWayX);
   }
 
   /**
@@ -349,8 +355,8 @@ public class PhysicsEngineMaxwellsDemon implements PhysicsEngine
   public void initializeFrame() {
     doorOpen = false;
 
-    for (code_swarm.PersonNode p : code_swarm.getLivingPeople()) {
-      if (p.mSpeed.x < 0.0f && nearDoor(p)) {
+    for (PersonNode p : code_swarm.getLivingPeople()) {
+      if (p.getMSpeed().x < 0.0f && nearDoor(p)) {
         doorOpen = true;
         break;
       }
@@ -373,11 +379,11 @@ public class PhysicsEngineMaxwellsDemon implements PhysicsEngine
    *
    * @Note Standard physics is "Position Variation = Speed x Duration" with a convention of "Duration=1" between to frames
    */
-  public void onRelaxEdge(code_swarm.Edge edge) {
-    boolean fSide = whichSide(edge.nodeFrom);
-    boolean pSide = whichSide(edge.nodeTo);
+  public void onRelaxEdge(Edge edge) {
+    boolean fSide = whichSide(edge.getNodeFrom());
+    boolean pSide = whichSide(edge.getNodeTo());
 
-    if ((!doorOpen && fSide != pSide) || ((doorOpen && edge.nodeFrom.mPosition.y < startDoorY) || (doorOpen && edge.nodeFrom.mPosition.y > startDoorY + doorSize))) {
+    if ((!doorOpen && fSide != pSide) || ((doorOpen && edge.getNodeFrom().getMPosition().y < startDoorY) || (doorOpen && edge.getNodeFrom().getMPosition().y > startDoorY + doorSize))) {
       return;
     }
 
@@ -386,10 +392,10 @@ public class PhysicsEngineMaxwellsDemon implements PhysicsEngine
 
     // transmit force projection to file and person nodes
     force.negate();
-    applyForceTo(edge.nodeFrom, force); // fNode: attract fNode to pNode
+    applyForceTo(edge.getNodeFrom(), force); // fNode: attract fNode to pNode
     // which half of the screen are we on?
-    applySpeedTo(edge.nodeFrom); // fNode: move it.
-    constrainNode(edge.nodeFrom, whichSide(edge.nodeFrom)); // Keep it in bounds.
+    applySpeedTo(edge.getNodeFrom()); // fNode: move it.
+    constrainNode(edge.getNodeFrom(), whichSide(edge.getNodeFrom())); // Keep it in bounds.
   }
 
   /**
@@ -399,7 +405,7 @@ public class PhysicsEngineMaxwellsDemon implements PhysicsEngine
    *
    * @Note Standard physics is "Position Variation = Speed x Duration" with a convention of "Duration=1" between to frames
    */
-  public void onUpdateEdge(code_swarm.Edge edge) {
+  public void onUpdateEdge(Edge edge) {
     edge.decay();
   }
 
@@ -410,14 +416,14 @@ public class PhysicsEngineMaxwellsDemon implements PhysicsEngine
    *
    * @Note Standard physics is "Position Variation = Speed x Duration" with a convention of "Duration=1" between to frames
    */
-  public void onRelaxNode(code_swarm.FileNode fNode ) {
+  public void onRelaxNode(FileNode fNode ) {
     boolean mySide = whichSide(fNode);
 
     Vector2f forceBetweenFiles = new Vector2f();
     Vector2f forceSummation    = new Vector2f();
 
     // Calculation of repulsive force between persons
-    for (code_swarm.FileNode n : code_swarm.getLivingNodes()) {
+    for (FileNode n : code_swarm.getLivingNodes()) {
       if (n != fNode && mySide == whichSide(n)) {
         // elemental force calculation, and summation
         forceBetweenFiles = calculateForceBetweenfNodes(fNode, n);
@@ -435,7 +441,7 @@ public class PhysicsEngineMaxwellsDemon implements PhysicsEngine
    *
    * @Note Standard physics is "Position Variation = Speed x Duration" with a convention of "Duration=1" between to frames
    */
-  public void onUpdateNode(code_swarm.FileNode fNode) {
+  public void onUpdateNode(FileNode fNode) {
     // Apply Speed to Position on nodes
     applySpeedTo(fNode);
     constrainNode(fNode, whichSide(fNode)); // Keep it in bounds.
@@ -444,7 +450,7 @@ public class PhysicsEngineMaxwellsDemon implements PhysicsEngine
     fNode.decay();
 
     // Apply drag (reduce Speed for next frame calculation)
-    fNode.mSpeed.scale(DRAG);
+    fNode.getMSpeed().scale(DRAG);
   }
 
   /**
@@ -454,22 +460,22 @@ public class PhysicsEngineMaxwellsDemon implements PhysicsEngine
    *
    * @Note Standard physics is "Position Variation = Speed x Duration" with a convention of "Duration=1" between to frames
    */
-  public void onRelaxPerson(code_swarm.PersonNode pNode) {
-    if (pNode.mSpeed.length() == 0) {
+  public void onRelaxPerson(PersonNode pNode) {
+    if (pNode.getMSpeed().length() == 0) {
       // Range (-1,1)
-      pNode.mSpeed.set(pNode.mass*((float)Math.random()-pNode.mass),pNode.mass*((float)Math.random()-pNode.mass));
+      pNode.getMSpeed().set(pNode.getMass()*((float)Math.random()-pNode.getMass()),pNode.getMass()*((float)Math.random()-pNode.getMass()));
     }
 
-    pNode.mSpeed.scale(pNode.mass);
-    pNode.mSpeed.normalize();
-    pNode.mSpeed.scale(5);
+    pNode.getMSpeed().scale(pNode.getMass());
+    pNode.getMSpeed().normalize();
+    pNode.getMSpeed().scale(5);
 
-    float distance = pNode.mSpeed.length();
+    float distance = pNode.getMSpeed().length();
     if (distance > 0) {
-      float deltaDistance = (pNode.mass - distance) / (distance * 2);
-      deltaDistance *= ((float)pNode.life / pNode.LIFE_INIT);
+      float deltaDistance = (pNode.getMass() - distance) / (distance * 2);
+      deltaDistance *= ((float)pNode.getLife() / pNode.getLifeInit());
 
-      pNode.mSpeed.scale(deltaDistance);
+      pNode.getMSpeed().scale(deltaDistance);
     }
   }
 
@@ -480,16 +486,16 @@ public class PhysicsEngineMaxwellsDemon implements PhysicsEngine
    *
    * @Note Standard physics is "Position Variation = Speed x Duration" with a convention of "Duration=1" between to frames
    */
-  public void onUpdatePerson(code_swarm.PersonNode pNode) {
+  public void onUpdatePerson(PersonNode pNode) {
     boolean rightSide = whichSide(pNode);
 
     applySpeedTo(pNode);
 
     // Check for collisions with neighbors.
-    for (code_swarm.PersonNode p : code_swarm.getLivingPeople()) {
+    for (PersonNode p : code_swarm.getLivingPeople()) {
       if (pNode != p) {
         Vector2f force = calculateForceBetweenpNodes(pNode,p);
-        pNode.mPosition.add(force);
+        pNode.getMPosition().add(force);
       }
     }
 
@@ -503,30 +509,30 @@ public class PhysicsEngineMaxwellsDemon implements PhysicsEngine
       //  |     |
       //  |  |  |
       //  |  |  |
-      if (pNode.mPosition.y < startDoorY || pNode.mPosition.y > midWayY) { // Above the door, and below the door.
+      if (pNode.getMPosition().y < startDoorY || pNode.getMPosition().y > midWayY) { // Above the door, and below the door.
         if (rightSide) {
-          if ((pNode.mPosition.x < (midWayX + pNode.mass) && pNode.mSpeed.x < 0.0f) || (pNode.mPosition.x > (code_swarm.width - pNode.mass) && pNode.mSpeed.x > 0.0f)) {
-            pNode.mSpeed.x = -pNode.mSpeed.x;
+          if ((pNode.getMPosition().x < (midWayX + pNode.getMass()) && pNode.getMSpeed().x < 0.0f) || (pNode.getMPosition().x > (code_swarm.getCodeSwarmWidth() - pNode.getMass()) && pNode.getMSpeed().x > 0.0f)) {
+            pNode.getMSpeed().x = -pNode.getMSpeed().x;
             int i = 0;
-            while (pNode.mPosition.x < (midWayX + pNode.mass) || pNode.mPosition.x > (code_swarm.width - pNode.mass)) {
-              pNode.mPosition.x += pNode.mSpeed.x * (i++ % 10);
+            while (pNode.getMPosition().x < (midWayX + pNode.getMass()) || pNode.getMPosition().x > (code_swarm.getCodeSwarmWidth() - pNode.getMass())) {
+              pNode.getMPosition().x += pNode.getMSpeed().x * (i++ % 10);
             }
           }
         } else { // left side
-          if ((pNode.mPosition.x < pNode.mass && pNode.mSpeed.x < 0.0f) || (pNode.mPosition.x > (midWayX - pNode.mass) && pNode.mSpeed.x > 0.0f)) {
-            pNode.mSpeed.x = -pNode.mSpeed.x;
+          if ((pNode.getMPosition().x < pNode.getMass() && pNode.getMSpeed().x < 0.0f) || (pNode.getMPosition().x > (midWayX - pNode.getMass()) && pNode.getMSpeed().x > 0.0f)) {
+            pNode.getMSpeed().x = -pNode.getMSpeed().x;
             int i = 0;
-            while (pNode.mPosition.x < pNode.mass || pNode.mPosition.x > (midWayX - pNode.mass)) {
-              pNode.mPosition.x += pNode.mSpeed.x * (i++ % 10);
+            while (pNode.getMPosition().x < pNode.getMass() || pNode.getMPosition().x > (midWayX - pNode.getMass())) {
+              pNode.getMPosition().x += pNode.getMSpeed().x * (i++ % 10);
             }
           }
         }
       } else { // Same level as the door
-        if ((pNode.mPosition.x < pNode.mass && pNode.mSpeed.x < 0.0f) || (pNode.mPosition.x > (code_swarm.width - pNode.mass) && pNode.mSpeed.x > 0.0f)) {
-          pNode.mSpeed.x = -pNode.mSpeed.x;
+        if ((pNode.getMPosition().x < pNode.getMass() && pNode.getMSpeed().x < 0.0f) || (pNode.getMPosition().x > (code_swarm.getCodeSwarmWidth() - pNode.getMass()) && pNode.getMSpeed().x > 0.0f)) {
+          pNode.getMSpeed().x = -pNode.getMSpeed().x;
           int i = 0;
-          while (pNode.mPosition.x < pNode.mass || pNode.mPosition.x > (code_swarm.width - pNode.mass)) {
-            pNode.mPosition.x += pNode.mSpeed.x * (i++ % 10);
+          while (pNode.getMPosition().x < pNode.getMass() || pNode.getMPosition().x > (code_swarm.getCodeSwarmWidth() - pNode.getMass())) {
+            pNode.getMPosition().x += pNode.getMSpeed().x * (i++ % 10);
           }
         }
       }
@@ -540,19 +546,19 @@ public class PhysicsEngineMaxwellsDemon implements PhysicsEngine
       //  |  |  |
 
       if (rightSide) {
-        if ((pNode.mPosition.x < (midWayX + pNode.mass) && pNode.mSpeed.x < 0.0f) || (pNode.mPosition.x > (code_swarm.width - pNode.mass) && pNode.mSpeed.x > 0.0f)) {
-          pNode.mSpeed.x = -pNode.mSpeed.x;
+        if ((pNode.getMPosition().x < (midWayX + pNode.getMass()) && pNode.getMSpeed().x < 0.0f) || (pNode.getMPosition().x > (code_swarm.getCodeSwarmWidth() - pNode.getMass()) && pNode.getMSpeed().x > 0.0f)) {
+          pNode.getMSpeed().x = -pNode.getMSpeed().x;
           int i = 0;
-          while (pNode.mPosition.x < (midWayX + pNode.mass) || pNode.mPosition.x > (code_swarm.width - pNode.mass)) {
-            pNode.mPosition.x += pNode.mSpeed.x * (i++ % 10);
+          while (pNode.getMPosition().x < (midWayX + pNode.getMass()) || pNode.getMPosition().x > (code_swarm.getCodeSwarmWidth() - pNode.getMass())) {
+            pNode.getMPosition().x += pNode.getMSpeed().x * (i++ % 10);
           }
         }
       } else { // left side
-        if ((pNode.mPosition.x < pNode.mass && pNode.mSpeed.x < 0.0f) || (pNode.mPosition.x > (midWayX - pNode.mass) && pNode.mSpeed.x > 0.0f)) {
-          pNode.mSpeed.x = -pNode.mSpeed.x;
+        if ((pNode.getMPosition().x < pNode.getMass() && pNode.getMSpeed().x < 0.0f) || (pNode.getMPosition().x > (midWayX - pNode.getMass()) && pNode.getMSpeed().x > 0.0f)) {
+          pNode.getMSpeed().x = -pNode.getMSpeed().x;
           int i = 0;
-          while (pNode.mPosition.x < pNode.mass || pNode.mPosition.x > (midWayX - pNode.mass)) {
-            pNode.mPosition.x += pNode.mSpeed.x * (i++ % 10);
+          while (pNode.getMPosition().x < pNode.getMass() || pNode.getMPosition().x > (midWayX - pNode.getMass())) {
+            pNode.getMPosition().x += pNode.getMSpeed().x * (i++ % 10);
           }
         }
       }
@@ -566,18 +572,18 @@ public class PhysicsEngineMaxwellsDemon implements PhysicsEngine
     //
     //  _______
 
-    if ((pNode.mPosition.y < pNode.mass && pNode.mSpeed.y < 0.0f) || ((pNode.mPosition.y > (code_swarm.height - pNode.mass) && pNode.mSpeed.y > 0.0f))) {
-      pNode.mSpeed.y = -pNode.mSpeed.y;
+    if ((pNode.getMPosition().y < pNode.getMass() && pNode.getMSpeed().y < 0.0f) || ((pNode.getMPosition().y > (code_swarm.getCodeSwarmHeight() - pNode.getMass()) && pNode.getMSpeed().y > 0.0f))) {
+      pNode.getMSpeed().y = -pNode.getMSpeed().y;
       int i = 0;
-      while (pNode.mPosition.y < pNode.mass || pNode.mPosition.y > (code_swarm.height - pNode.mass)) {
-        pNode.mPosition.y += pNode.mSpeed.y * (i++ % 10);
+      while (pNode.getMPosition().y < pNode.getMass() || pNode.getMPosition().y > (code_swarm.getCodeSwarmHeight() - pNode.getMass())) {
+        pNode.getMPosition().y += pNode.getMSpeed().y * (i++ % 10);
       }
     }
     // shortening life
     pNode.decay();
 
     // Apply drag (reduce Speed for next frame calculation)
-    pNode.mSpeed.scale(DRAG);
+    pNode.getMSpeed().scale(DRAG);
   }
 
   /**
@@ -586,10 +592,10 @@ public class PhysicsEngineMaxwellsDemon implements PhysicsEngine
    */
   public Vector2f pStartLocation() {
     float x = (float)Math.random() * midWayX + midWayX;
-    float y = (float)Math.random() * code_swarm.height;
+    float y = (float)Math.random() * code_swarm.getCodeSwarmHeight();
 
-    constrain(x, (midWayX + 10), (code_swarm.width - 10));
-    constrain(y, 10, (code_swarm.height - 10));
+    constrain(x, (midWayX + 10), (code_swarm.getCodeSwarmWidth() - 10));
+    constrain(y, 10, (code_swarm.getCodeSwarmHeight() - 10));
 
     Vector2f vec = new Vector2f(x, y);
 
@@ -602,10 +608,10 @@ public class PhysicsEngineMaxwellsDemon implements PhysicsEngine
    */
   public Vector2f fStartLocation() {
     float x = (float)Math.random() * midWayX + midWayX;
-    float y = (float)Math.random() * code_swarm.height;
+    float y = (float)Math.random() * code_swarm.getCodeSwarmHeight();
 
-    constrain(x, (midWayX + 10), (code_swarm.width - 10));
-    constrain(y, 10, (code_swarm.height - 10));
+    constrain(x, (midWayX + 10), (code_swarm.getCodeSwarmWidth() - 10));
+    constrain(y, 10, (code_swarm.getCodeSwarmHeight() - 10));
 
     Vector2f vec = new Vector2f(x, y);
 
