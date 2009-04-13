@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Properties;
 
-import codeswarm.repositoryevents.EventList;
+import codeswarm.repository.events.EventList;
 
 /**
  * @author Michael Ogawa

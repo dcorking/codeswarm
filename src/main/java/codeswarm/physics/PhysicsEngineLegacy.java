@@ -1,4 +1,4 @@
-package codeswarm;
+package codeswarm.physics;
 
 /**
  * Copyright 2008 code_swarm project team
@@ -23,6 +23,12 @@ import java.util.Properties;
 
 import javax.vecmath.Vector2f;
 
+import codeswarm.Edge;
+import codeswarm.FileNode;
+import codeswarm.Node;
+import codeswarm.PersonNode;
+import codeswarm.code_swarm;
+
 /**
  * @brief Legacy algorithms describing all physicals interactions between nodes (files and persons)
  *
@@ -30,15 +36,20 @@ import javax.vecmath.Vector2f;
  *
  * @see PhysicsEngine Physical Engine Interface
  */
-public class PhysicsEngineLegacy implements PhysicsEngine
+public class PhysicsEngineLegacy extends PhysicsEngine
 {
-  private Properties cfg;
+
+	private Properties cfg;
 
   private float FORCE_EDGE_MULTIPLIER;
   private float FORCE_CALCULATION_RANDOMIZER;
   private float FORCE_NODES_MULTIPLIER;
   private float FORCE_TO_SPEED_MULTIPLIER;
   private float SPEED_TO_POSITION_MULTIPLIER;
+
+  public PhysicsEngineLegacy(code_swarm drawable) {
+	  super(drawable);
+  }
 
   /**
    * Method for initializing parameters.
@@ -78,7 +89,7 @@ public class PhysicsEngineLegacy implements PhysicsEngine
    * @param edge the link between a person and one of its file
    * @return force force calculated between those two nodes
    */
-  private Vector2f calculateForceAlongAnEdge( code_swarm.Edge edge )
+  private Vector2f calculateForceAlongAnEdge(Edge edge)
   {
     float distance;
     float deltaDistance;
@@ -86,14 +97,14 @@ public class PhysicsEngineLegacy implements PhysicsEngine
     Vector2f tforce = new Vector2f();
 
     // distance calculation
-    tforce.sub(edge.nodeTo.mPosition, edge.nodeFrom.mPosition);
+    tforce.sub(edge.getNodeTo().getMPosition(), edge.getNodeFrom().getMPosition());
     distance = tforce.length();
     if (distance > 0) {
       // force calculation (increase when distance is different from targeted len")
-      deltaDistance = (edge.len - distance) / (distance * 3);
+      deltaDistance = (edge.getLen() - distance) / (distance * 3);
       // force ponderation using a re-mapping life from 0-255 scale to 0-1.0 range
       // This allows nodes to drift apart as their life decreases.
-      deltaDistance *= ((float)edge.life / edge.LIFE_INIT);
+      deltaDistance *= ((float)edge.getLife() / edge.getLifeInit());
 
       // force projection onto x and y axis
       tforce.scale(deltaDistance*FORCE_EDGE_MULTIPLIER);
@@ -111,7 +122,7 @@ public class PhysicsEngineLegacy implements PhysicsEngine
    * @param nodeB [in]
    * @return force force calculated between those two nodes
    */
-  private Vector2f calculateForceBetweenNodes( code_swarm.Node nodeA, code_swarm.Node nodeB )
+  private Vector2f calculateForceBetweenNodes(Node nodeA, Node nodeB)
   {
     float lensq;
     Vector2f force = new Vector2f();
@@ -120,7 +131,7 @@ public class PhysicsEngineLegacy implements PhysicsEngine
     /**
      * Get the distance between nodeA and nodeB
      */
-    normVec.sub(nodeA.mPosition, nodeB.mPosition);
+    normVec.sub(nodeA.getMPosition(), nodeB.getMPosition());
     lensq = normVec.lengthSquared();
     /**
      * If there is a Collision.  This is assuming a radius of zero.
@@ -148,7 +159,7 @@ public class PhysicsEngineLegacy implements PhysicsEngine
    *
    * TODO: does force should be a property of the node (or not?)
    */
-  private void applyForceTo( code_swarm.Node node, Vector2f force )
+  private void applyForceTo(Node node, Vector2f force)
   {
     float dlen;
     Vector2f mod = new Vector2f(force);
@@ -158,8 +169,8 @@ public class PhysicsEngineLegacy implements PhysicsEngine
      */
     dlen = mod.length();
     if (dlen > 0) {
-      mod.scale(node.mass * FORCE_TO_SPEED_MULTIPLIER);
-      node.mSpeed.add(mod);
+      mod.scale(node.getMass() * FORCE_TO_SPEED_MULTIPLIER);
+      node.getMSpeed().add(mod);
     }
   }
 
@@ -168,21 +179,21 @@ public class PhysicsEngineLegacy implements PhysicsEngine
    *
    * @param node the node to which the force apply
     */
-  private void applySpeedTo( code_swarm.Node node )
+  private void applySpeedTo(Node node)
   {
     float div;
     // This block enforces a maximum absolute velocity.
-    if (node.mSpeed.length() > node.maxSpeed) {
-      Vector2f mag = new Vector2f(node.mSpeed.x / node.maxSpeed, node.mSpeed.y / node.maxSpeed);
+    if (node.getMSpeed().length() > node.getMaxSpeed()) {
+      Vector2f mag = new Vector2f(node.getMSpeed().x / node.getMaxSpeed(), node.getMSpeed().y / node.getMaxSpeed());
       div = mag.length();
-      node.mSpeed.scale( 1/div );
+      node.getMSpeed().scale( 1/div );
     }
 
     // This block convert Speed to Position
-    node.mPosition.add(node.mSpeed);
+    node.getMPosition().add(node.getMSpeed());
 
     // Apply drag (reduce Speed for next frame calculation)
-    node.mSpeed.scale( SPEED_TO_POSITION_MULTIPLIER );
+    node.getMSpeed().scale( SPEED_TO_POSITION_MULTIPLIER );
   }
 
   /**
@@ -204,16 +215,16 @@ public class PhysicsEngineLegacy implements PhysicsEngine
    *
    * @Note Standard physics is "Position Variation = Speed x Duration" with a convention of "Duration=1" between to frames
    */
-  public void onRelaxEdge(code_swarm.Edge edge) {
+  public void onRelaxEdge(Edge edge) {
     Vector2f force    = new Vector2f();
 
     // Calculate force between the node "from" and the node "to"
     force = calculateForceAlongAnEdge(edge);
 
     // transmit (applying) fake force projection to file and person nodes
-    applyForceTo(edge.nodeTo, force);
+    applyForceTo(edge.getNodeTo(), force);
     force.negate(); // force is inverted for the other end of the edge
-    applyForceTo(edge.nodeFrom, force);
+    applyForceTo(edge.getNodeFrom(), force);
   }
 
   /**
@@ -223,12 +234,12 @@ public class PhysicsEngineLegacy implements PhysicsEngine
    *
    * @Note Standard physics is "Position Variation = Speed x Duration" with a convention of "Duration=1" between to frames
    */
-  public void onRelaxNode(code_swarm.FileNode fNode ) {
+  public void onRelaxNode(FileNode fNode) {
     Vector2f forceBetweenFiles = new Vector2f();
     Vector2f forceSummation    = new Vector2f();
 
     // Calculation of repulsive force between persons
-    for (code_swarm.FileNode n : code_swarm.getLivingNodes()) {
+    for (FileNode n : code_swarm.getLivingNodes()) {
       if (n != fNode) {
         // elemental force calculation, and summation
         forceBetweenFiles = calculateForceBetweenNodes(fNode, n);
@@ -246,12 +257,12 @@ public class PhysicsEngineLegacy implements PhysicsEngine
    *
    * @Note Standard physics is "Position Variation = Speed x Duration" with a convention of "Duration=1" between to frames
    */
-  public void onRelaxPerson(code_swarm.PersonNode pNode) {
+  public void onRelaxPerson(PersonNode pNode) {
     Vector2f forceBetweenPersons = new Vector2f();
     Vector2f forceSummation      = new Vector2f();
 
     // Calculation of repulsive force between persons
-    for (code_swarm.PersonNode p : code_swarm.getLivingPeople()) {
+    for (PersonNode p : code_swarm.getLivingPeople()) {
       if (p != pNode) {
         // elemental force calculation, and summation
         forceBetweenPersons = calculateForceBetweenNodes(pNode, p);
@@ -262,7 +273,7 @@ public class PhysicsEngineLegacy implements PhysicsEngine
     applyForceTo(pNode, forceSummation);
 
     // Don't know why, but the prototype had this.
-    pNode.mSpeed.scale(1.0f/12);
+    pNode.getMSpeed().scale(1.0f/12);
   }
 
   /**
@@ -272,7 +283,7 @@ public class PhysicsEngineLegacy implements PhysicsEngine
    *
    * @Note Standard physics is "Position Variation = Speed x Duration" with a convention of "Duration=1" between to frames
    */
-  public void onUpdateEdge(code_swarm.Edge edge) {
+  public void onUpdateEdge(Edge edge) {
     edge.decay();
   }
 
@@ -283,12 +294,12 @@ public class PhysicsEngineLegacy implements PhysicsEngine
    *
    * @Note Standard physics is "Position Variation = Speed x Duration" with a convention of "Duration=1" between to frames
    */
-  public void onUpdateNode(code_swarm.FileNode fNode) {
+  public void onUpdateNode(FileNode fNode) {
     // Apply Speed to Position on nodes
     applySpeedTo(fNode);
 
     // ensure coherent resulting position
-    fNode.mPosition.set(constrain(fNode.mPosition.x, 0.0f, (float)code_swarm.width),constrain(fNode.mPosition.y, 0.0f, (float)code_swarm.height));
+    fNode.getMPosition().set(constrain(fNode.getMPosition().x, 0.0f, (float)code_swarm.getCodeSwarmWidth()),constrain(fNode.getMPosition().y, 0.0f, (float)code_swarm.getCodeSwarmHeight()));
 
     // shortening life
     fNode.decay();
@@ -301,12 +312,12 @@ public class PhysicsEngineLegacy implements PhysicsEngine
    *
    * @Note Standard physics is "Position Variation = Speed x Duration" with a convention of "Duration=1" between to frames
    */
-  public void onUpdatePerson(code_swarm.PersonNode pNode) {
+  public void onUpdatePerson(PersonNode pNode) {
     // Apply Speed to Position on nodes
     applySpeedTo(pNode);
 
     // ensure coherent resulting position
-    pNode.mPosition.set(constrain(pNode.mPosition.x, 0.0f, (float)code_swarm.width),constrain(pNode.mPosition.y, 0.0f, (float)code_swarm.height));
+    pNode.getMPosition().set(constrain(pNode.getMPosition().x, 0.0f, (float)code_swarm.getCodeSwarmWidth()),constrain(pNode.getMPosition().y, 0.0f, (float)code_swarm.getCodeSwarmHeight()));
 
     // shortening life
     pNode.decay();
@@ -317,7 +328,7 @@ public class PhysicsEngineLegacy implements PhysicsEngine
    * @return Vector2f vector holding the starting location for a Person Node
    */
   public Vector2f pStartLocation() {
-    Vector2f vec = new Vector2f(code_swarm.width*(float)Math.random(), code_swarm.height*(float)Math.random());
+    Vector2f vec = new Vector2f(code_swarm.getCodeSwarmWidth()*(float)Math.random(), code_swarm.getCodeSwarmHeight()*(float)Math.random());
     return vec;
   }
 
@@ -326,7 +337,7 @@ public class PhysicsEngineLegacy implements PhysicsEngine
    * @return Vector2f vector holding the starting location for a File Node
    */
   public Vector2f fStartLocation() {
-    Vector2f vec = new Vector2f(code_swarm.width*(float)Math.random(), code_swarm.height*(float)Math.random());
+    Vector2f vec = new Vector2f(code_swarm.getCodeSwarmWidth()*(float)Math.random(), code_swarm.getCodeSwarmHeight()*(float)Math.random());
     return vec;
   }
 

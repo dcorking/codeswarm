@@ -1,4 +1,4 @@
-package codeswarm.repositoryevents;
+package codeswarm.repository.events;
 
 /* This file is part of code_swarm.
 

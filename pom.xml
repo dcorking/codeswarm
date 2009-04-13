@@ -6,7 +6,7 @@
 	<packaging>jar</packaging>
 	<version>1.0.0</version>
 	<name>code_swarm</name>
-	<description>This visualization, called code_swarm, shows the history of commits in a software 
+	<description>This visualisation, called code_swarm, shows the history of commits in a software 
 	project. A commit happens when a developer makes changes to the code or documents and transfers 
 	them into the central project repository. Both developers and files are represented as moving 
 	elements. When a developer commits a file, it lights up and flies towards that developer. Files 
@@ -16,6 +16,12 @@
 	<url>http://vis.cs.ucdavis.edu/~ogawa/codeswarm</url>
 	<inceptionYear>2008</inceptionYear>
 	<dependencies>
+		<!-- <dependency>
+	      <groupId>org.processing</groupId>
+	      <artifactId>processing-core</artifactId>
+	      <version>1.0.3</version>
+	    </dependency>
+	    -->
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>

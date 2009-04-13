@@ -34,9 +34,9 @@ import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNLogEntry;
 import org.tmatesoft.svn.core.SVNLogEntryPath;
 
-import codeswarm.repositoryevents.CodeSwarmEventsSerializer;
-import codeswarm.repositoryevents.Event;
-import codeswarm.repositoryevents.EventList;
+import codeswarm.repository.events.CodeSwarmEventsSerializer;
+import codeswarm.repository.events.Event;
+import codeswarm.repository.events.EventList;
 
 /**
  * Performs the repository lookup and serializes the data.

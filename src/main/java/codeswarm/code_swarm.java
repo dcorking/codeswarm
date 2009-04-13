@@ -38,114 +38,85 @@ import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import javax.vecmath.Vector2f;
-
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.DefaultHandler;
-import org.xml.sax.helpers.XMLReaderFactory;
-
 import processing.core.PApplet;
 import processing.core.PFont;
 import processing.core.PImage;
+import codeswarm.physics.PhysicsEngine;
+import codeswarm.ui.MainView;
 
 /**
  *
  *
  */
-public class code_swarm extends PApplet {
+public class code_swarm extends PApplet implements TaskListener {
+	
   /** @remark needed for any serializable class */
-  public static final long serialVersionUID = 0;
+  private static final long serialVersionUID = 0;
 
   // User-defined variables
-  int FRAME_RATE = 24;
-  long UPDATE_DELTA = -1;
-  String SPRITE_FILE = "particle.png";
-  String SCREENSHOT_FILE;
-  int background;
+  private int FRAME_RATE = 24;
+  private long UPDATE_DELTA = -1;
+  private String SCREENSHOT_FILE;
+  private int background;
 
   // Data storage
-  BlockingQueue<FileEvent> eventsQueue;
-  boolean isInputSorted = false;
+  private BlockingQueue<FileEvent> eventsQueue;
+  private boolean isInputSorted = false;
   protected static CopyOnWriteArrayList<FileNode> nodes;
   protected static CopyOnWriteArrayList<Edge> edges;
   protected static CopyOnWriteArrayList<PersonNode> people;
-  LinkedList<ColorBins> history;
+  private LinkedList<ColorBins> history;
 
-  boolean finishedLoading = false;
+  private boolean finishedLoading = false;
 
   // Temporary variables
-  FileEvent currentEvent;
-  Date nextDate;
-  Date prevDate;
-  FileNode prevNode;
-  int maxTouches;
+  private FileEvent currentEvent;
+  private Date nextDate;
+  private Date prevDate;
+//  private FileNode prevNode;
 
   // Graphics objects
-  PFont font;
-  PFont boldFont;
-  PImage sprite;
+  private static PFont font;
+  private static PFont boldFont;
+  private PImage sprite;
 
   // Graphics state variables
-  boolean looping = true;
-  boolean coolDown = false;
-  boolean showHistogram = true;
-  boolean showDate = true;
-  boolean showLegend = false;
-  boolean showPopular = false;
-  boolean showEdges = false;
-  boolean showEngine = false;
-  boolean showHelp = false;
-  boolean takeSnapshots = false;
-  boolean showDebug = false;
-  boolean drawNamesSharp = false;
-  boolean drawNamesHalos = false;
-  boolean drawFilesSharp = false;
-  boolean drawFilesFuzzy = false;
-  boolean drawFilesJelly = false;
-
-  //used to ensure that input is sorted when we are told it is
-  long maximumDateSeenSoFar = 0;
+  private boolean looping = true;
+  private boolean coolDown = false;
+  private boolean showHistogram = true;
+  private boolean showDate = true;
+  private boolean showLegend = false;
+  private boolean showPopular = false;
+  private boolean showEdges = false;
+  private boolean showEngine = false;
+  private boolean showHelp = false;
+  private boolean takeSnapshots = false;
+  private boolean showDebug = false;
+  private boolean drawNamesSharp = false;
+  private boolean drawNamesHalos = false;
+  private boolean drawFilesSharp = false;
+  private boolean drawFilesFuzzy = false;
+  private boolean drawFilesJelly = false;
 
   // Color mapper
-  ColorAssigner colorAssigner;
-  int currentColor;
-
-  // Edge Length
-  protected static int EDGE_LEN = 25;
-  // Drawable object life decrement
-  private int EDGE_LIFE_INIT = 255;
-  private int FILE_LIFE_INIT = 255;
-  private int PERSON_LIFE_INIT = 255;
-  private int EDGE_LIFE_DECREMENT = -1;
-  private int FILE_LIFE_DECREMENT = -1;
-  private int PERSON_LIFE_DECREMENT = -1;
-
-  private float DEFAULT_NODE_SPEED = 7.0f;
-  private float DEFAULT_FILE_SPEED = 7.0f;
-  private float DEFAULT_PERSON_SPEED = 2.0f;
-
-  private float FILE_MASS = 1.0f;
-  private float PERSON_MASS = 10.0f;
-
-  private int HIGHLIGHT_PCT = 5;
+  private ColorAssigner colorAssigner;
+//  private int currentColor;
 
   // Physics engine configuration
-  String          physicsEngineConfigDir;
-  String          physicsEngineSelection;
-  LinkedList<peConfig> mPhysicsEngineChoices = new LinkedList<peConfig>();
-  PhysicsEngine  mPhysicsEngine = null;
+  private String          physicsEngineConfigDir;
+  private String          physicsEngineSelection;
+  private java.util.Vector<PhysicsEngine> mPhysicsEngineChoices = new java.util.Vector<PhysicsEngine>();
+  private PhysicsEngine  mPhysicsEngine = null;
   private boolean safeToToggle = false;
   private boolean wantToToggle = false;
   private boolean toggleDirection = false;
 
 
   // Default Physics Engine (class) name
-  static final String PHYSICS_ENGINE_LEGACY  = "PhysicsEngineLegacy";
+  private static final String PHYSICS_ENGINE_LEGACY  = "PhysicsEngineLegacy";
 
   // Formats the date string nicely
-  DateFormat formatter = DateFormat.getDateInstance();
+  private DateFormat formatter = DateFormat.getDateInstance();
 
   protected static CodeSwarmConfig cfg;
   private long lastDrawDuration = 0;
@@ -156,23 +127,12 @@ public class code_swarm extends PApplet {
 
   protected int maxBackgroundThreads;
   protected ExecutorService backgroundExecutor;
-  /**
-   *  Used for utility functions
-   *  current members:
-   *      drawPoint: Pass coords and color
-   *      drawLine: Pass coords and color
-   */
-  public static Utils utils = null;
 
   /**
-   * Initialization
+   * Initialisation
    */
   public void setup() {
-
-    utils = new Utils();
-
     width=cfg.getIntProperty(CodeSwarmConfig.WIDTH_KEY,640);
-
     if (width <= 0) {
       width = 640;
     }
@@ -194,115 +154,18 @@ public class code_swarm extends PApplet {
       size(width, height);
     }
 
-    if (cfg.getBooleanProperty(CodeSwarmConfig.SHOW_LEGEND, false)) {
-      showLegend = true;
-    } else {
-      showLegend = false;
-    }
-
-    if (cfg.getBooleanProperty(CodeSwarmConfig.SHOW_HISTORY, false)) {
-      showHistogram = true;
-    } else {
-      showHistogram = false;
-    }
-
-    if (cfg.getBooleanProperty(CodeSwarmConfig.SHOW_DATE, false)) {
-      showDate = true;
-    } else {
-      showDate = false;
-    }
-
-    if (cfg.getBooleanProperty(CodeSwarmConfig.SHOW_EDGES, false)) {
-      showEdges = true;
-    } else {
-      showEdges = false;
-    }
-
-    if (cfg.getBooleanProperty(CodeSwarmConfig.SHOW_DEBUG, false)) {
-      showDebug = true;
-    } else {
-      showDebug = false;
-    }
-
-    if (cfg.getBooleanProperty(CodeSwarmConfig.TAKE_SNAPSHOTS_KEY,false)) {
-      takeSnapshots = true;
-    } else {
-      takeSnapshots = false;
-    }
-
-    if (cfg.getBooleanProperty(CodeSwarmConfig.DRAW_NAMES_SHARP, true)) {
-      drawNamesSharp = true;
-    } else {
-      drawNamesSharp = false;
-    }
-
-    if (cfg.getBooleanProperty(CodeSwarmConfig.DRAW_NAMES_HALOS, false)) {
-      drawNamesHalos = true;
-    } else {
-      drawNamesHalos = false;
-    }
-
-    if (cfg.getBooleanProperty(CodeSwarmConfig.DRAW_FILES_SHARP, false)) {
-      drawFilesSharp = true;
-    } else {
-      drawFilesSharp = false;
-    }
-
-    if (cfg.getBooleanProperty(CodeSwarmConfig.DRAW_FILES_FUZZY, true)) {
-      drawFilesFuzzy = true;
-    } else {
-      drawFilesFuzzy = false;
-    }
-
-    if (cfg.getBooleanProperty(CodeSwarmConfig.DRAW_FILES_JELLY, false)) {
-      drawFilesJelly = true;
-    } else {
-      drawFilesJelly = false;
-    }
-
+    showLegend = cfg.getBooleanProperty(CodeSwarmConfig.SHOW_LEGEND, false);
+    showHistogram = cfg.getBooleanProperty(CodeSwarmConfig.SHOW_HISTORY, false);
+    showDate = cfg.getBooleanProperty(CodeSwarmConfig.SHOW_DATE, false);
+    showEdges = cfg.getBooleanProperty(CodeSwarmConfig.SHOW_EDGES, false);
+    showDebug = cfg.getBooleanProperty(CodeSwarmConfig.SHOW_DEBUG, false);
+    takeSnapshots = cfg.getBooleanProperty(CodeSwarmConfig.TAKE_SNAPSHOTS_KEY, false);
+    drawNamesSharp = cfg.getBooleanProperty(CodeSwarmConfig.DRAW_NAMES_SHARP, true);
+    drawNamesHalos = cfg.getBooleanProperty(CodeSwarmConfig.DRAW_NAMES_HALOS, false);
+    drawFilesSharp = cfg.getBooleanProperty(CodeSwarmConfig.DRAW_FILES_SHARP, false);
+    drawFilesFuzzy = cfg.getBooleanProperty(CodeSwarmConfig.DRAW_FILES_FUZZY, true);
+    drawFilesJelly = cfg.getBooleanProperty(CodeSwarmConfig.DRAW_FILES_JELLY, false);
     background = cfg.getBackground().getRGB();
-
-    // Ensure we have sane values.
-    EDGE_LIFE_INIT = cfg.getIntProperty(CodeSwarmConfig.EDGE_LIFE_KEY,255);
-    if (EDGE_LIFE_INIT <= 0) {
-      EDGE_LIFE_INIT = 255;
-    }
-
-    FILE_LIFE_INIT = cfg.getIntProperty(CodeSwarmConfig.FILE_LIFE_KEY,255);
-    if (FILE_LIFE_INIT <= 0) {
-      FILE_LIFE_INIT = 255;
-    }
-
-    PERSON_LIFE_INIT = cfg.getIntProperty(CodeSwarmConfig.PERSON_LIFE_KEY,255);
-    if (PERSON_LIFE_INIT <= 0) {
-      PERSON_LIFE_INIT = 255;
-    }
-
-    /* enforce decrements < 0 */
-    EDGE_LIFE_DECREMENT = cfg.getIntProperty(CodeSwarmConfig.EDGE_DECREMENT_KEY,-2);
-    if (EDGE_LIFE_DECREMENT >= 0) {
-      EDGE_LIFE_DECREMENT = -2;
-    }
-    FILE_LIFE_DECREMENT = cfg.getIntProperty(CodeSwarmConfig.FILE_DECREMENT_KEY,-2);
-    if (FILE_LIFE_DECREMENT >= 0) {
-      FILE_LIFE_DECREMENT = -2;
-    }
-    PERSON_LIFE_DECREMENT = cfg.getIntProperty(CodeSwarmConfig.PERSON_DECREMENT_KEY,-1);
-    if (PERSON_LIFE_DECREMENT >= 0) {
-      PERSON_LIFE_DECREMENT = -1;
-    }
-
-    DEFAULT_NODE_SPEED = cfg.getFloatProperty(CodeSwarmConfig.NODE_SPEED_KEY, 7.0f);
-    DEFAULT_FILE_SPEED = cfg.getFloatProperty(CodeSwarmConfig.FILE_SPEED_KEY, DEFAULT_NODE_SPEED);
-    DEFAULT_PERSON_SPEED = cfg.getFloatProperty(CodeSwarmConfig.PERSON_SPEED_KEY, DEFAULT_NODE_SPEED);
-
-    FILE_MASS = cfg.getFloatProperty(CodeSwarmConfig.FILE_MASS_KEY,1.0f);
-    PERSON_MASS = cfg.getFloatProperty(CodeSwarmConfig.PERSON_MASS_KEY,1.0f);
-
-    HIGHLIGHT_PCT = cfg.getIntProperty(CodeSwarmConfig.HIGHLIGHT_PCT_KEY,5);
-    if (HIGHLIGHT_PCT < 0 || HIGHLIGHT_PCT > 100) {
-      HIGHLIGHT_PCT = 5;
-    }
 
     UPDATE_DELTA = cfg.getIntProperty(CodeSwarmConfig.MSEC_PER_FRAME_KEY, -1);
     if (UPDATE_DELTA == -1) {
@@ -345,8 +208,8 @@ public class code_swarm extends PApplet {
         if ( ! ClassName.equals("__DEFAULT__")) {
           PhysicsEngine pe = getPhysicsEngine(ClassName);
           pe.setup(p);
-          peConfig pec = new peConfig(ClassName,pe);
-          mPhysicsEngineChoices.add(pec);
+          pe.setName(ClassName);
+          mPhysicsEngineChoices.add(pe);
         } else {
           System.out.println("Skipping config file '" + ConfigPath + "'.  Must specify class name via the 'name' parameter.");
           System.exit(1);
@@ -362,9 +225,9 @@ public class code_swarm extends PApplet {
     // Physics engine configuration and instantiation
     physicsEngineSelection = cfg.getStringProperty( CodeSwarmConfig.PHYSICS_ENGINE_SELECTION, PHYSICS_ENGINE_LEGACY );
 
-    for (peConfig p : mPhysicsEngineChoices) {
-      if (physicsEngineSelection.equals(p.name)) {
-        mPhysicsEngine = p.pe;
+    for (PhysicsEngine p : mPhysicsEngineChoices) {
+      if (physicsEngineSelection.equals(p.getName())) {
+        mPhysicsEngine = p;
       }
     }
 
@@ -395,16 +258,11 @@ public class code_swarm extends PApplet {
 
     loadRepEvents(cfg.getStringProperty(CodeSwarmConfig.INPUT_FILE_KEY)); // event formatted (this is the standard)
     while (!finishedLoading && eventsQueue.isEmpty());
-    prevDate = eventsQueue.peek().date;
+    prevDate = eventsQueue.peek().getDate();
 
     SCREENSHOT_FILE = cfg.getStringProperty(CodeSwarmConfig.SNAPSHOT_LOCATION_KEY);
 
     maxFramesSaved = (int) Math.pow(10, SCREENSHOT_FILE.replaceAll("[^#]","").length());
-
-    EDGE_LEN = cfg.getIntProperty(CodeSwarmConfig.EDGE_LENGTH_KEY);
-    if (EDGE_LEN <= 0) {
-      EDGE_LEN = 25;
-    }
 
     // Create fonts
     String fontName = cfg.getStringProperty(CodeSwarmConfig.FONT_KEY,"SansSerif");
@@ -416,9 +274,8 @@ public class code_swarm extends PApplet {
 
     textFont(font);
 
-    String SPRITE_FILE = cfg.getStringProperty(CodeSwarmConfig.SPRITE_FILE_KEY);
     // Create the file particle image
-    sprite = loadImage(SPRITE_FILE);
+    sprite = loadImage(cfg.getStringProperty(CodeSwarmConfig.SPRITE_FILE_KEY,"particle.png"));
     // Add translucency (using itself in this case)
     sprite.mask(sprite);
   }
@@ -536,7 +393,7 @@ public class code_swarm extends PApplet {
     colorMode(HSB);
     // First draw the name
     for (PersonNode p : people) {
-      fill(hue(p.flavor), 64, 255, p.life);
+      fill(hue(p.getFlavor()), 64, 255, p.life);
       p.draw();
     }
 
@@ -551,7 +408,7 @@ public class code_swarm extends PApplet {
     colorMode(RGB);
     for (int i = 0; i < people.size(); i++) {
       PersonNode p = people.get(i);
-      fill(lerpColor(p.flavor, color(255), 0.5f), max(p.life - 50, 0));
+      fill(lerpColor(p.getFlavor(), color(255), 0.5f), max(p.life - 50, 0));
       p.draw();
     }
   }
@@ -718,8 +575,10 @@ public class code_swarm extends PApplet {
     PhysicsEngine pe = null;
     try {
       Class<PhysicsEngine> c = (Class<PhysicsEngine>)Class.forName(name);
-      Constructor<PhysicsEngine> peConstructor = c.getConstructor();
-      pe = peConstructor.newInstance();
+      Class partypes[] = {code_swarm.class};
+      Constructor<PhysicsEngine> peConstructor = c.getConstructor(partypes);
+      Object arglist[] = {this};
+      pe = peConstructor.newInstance(arglist);
     } catch (Exception e) {
       e.printStackTrace();
       System.exit(1);
@@ -785,7 +644,7 @@ public class code_swarm extends PApplet {
     nextDate = new Date(prevDate.getTime() + UPDATE_DELTA);
     currentEvent = eventsQueue.peek();
 
-    while (currentEvent != null && currentEvent.date.before(nextDate)) {
+    while (currentEvent != null && currentEvent.getDate().before(nextDate)) {
       if (finishedLoading) {
         currentEvent = eventsQueue.poll();
         if (currentEvent == null)
@@ -795,48 +654,55 @@ public class code_swarm extends PApplet {
           try {
             currentEvent = eventsQueue.take();
           } catch (InterruptedException e) {
-          // TODO Auto-generated catch block
           System.out.println("Interrupted while fetching current event from eventsQueue");
           e.printStackTrace();
           continue;
         }
       }
 
-      FileNode n = findNode(currentEvent.path + currentEvent.filename);
+      FileNode n = findNode(currentEvent.getPath() + currentEvent.getFilename());
       if (n == null) {
-        n = new FileNode(currentEvent);
+    	float FILE_MASS = cfg.getFloatProperty(CodeSwarmConfig.FILE_MASS_KEY,1.0f);
+        n = new FileNode(currentEvent, FILE_MASS, mPhysicsEngine.pStartLocation(), mPhysicsEngine.pStartVelocity(FILE_MASS), this);
         nodes.add(n);
       } else {
         n.freshen(currentEvent);
       }
 
       // add to color bin
-      cb.add(n.nodeHue);
+      cb.add(n.getNodeHue());
 
-      PersonNode p = findPerson(currentEvent.author);
+      PersonNode p = findPerson(currentEvent.getAuthor());
       if (p == null) {
-        p = new PersonNode(currentEvent.author);
+    	float PERSON_MASS = cfg.getFloatProperty(CodeSwarmConfig.PERSON_MASS_KEY,1.0f);
+        p = new PersonNode(currentEvent.getAuthor(), color(0), PERSON_MASS, mPhysicsEngine.pStartLocation(), mPhysicsEngine.pStartVelocity(PERSON_MASS), this);
         people.add(p);
       } else {
         p.freshen();
       }
-      p.addColor(n.nodeHue);
+      p.addColor(n.getNodeHue());
 
       Edge ped = findEdge(n, p);
       if (ped == null) {
-        ped = new Edge(n, p);
+        ped = new Edge(n, p, this);
         edges.add(ped);
       } else
         ped.freshen();
 
       /*
-       * if ( currentEvent.date.equals( prevDate ) ) { Edge e = findEdge( n, prevNode
-       * ); if ( e == null ) { e = new Edge( n, prevNode ); edges.add( e ); } else {
-       * e.freshen(); } }
+       * if ( currentEvent.date.equals( prevDate ) ) { 
+       * 	Edge e = findEdge( n, prevNode); 
+       * 	if ( e == null ) { 
+       * 		e = new Edge( n, prevNode ); 
+       * 		edges.add( e ); 
+       * 	} else {
+       * 		e.freshen(); 
+       * 	} 
+       * }
        */
 
-      // prevDate = currentEvent.date;
-      prevNode = n;
+//      prevDate = currentEvent.date;
+//      prevNode = n;
       if (finishedLoading)
         currentEvent = eventsQueue.peek();
       else {
@@ -963,7 +829,8 @@ public class code_swarm extends PApplet {
   public void loadRepEvents(String filename) {
     final String fullFilename = filename;
 
-    Runnable eventLoader = new XMLQueueLoader(fullFilename, eventsQueue, isInputSorted);
+    XMLQueueLoader eventLoader = new XMLQueueLoader(fullFilename, eventsQueue, isInputSorted);
+    eventLoader.addTaskListener(this);
 
     if (isInputSorted)
       backgroundExecutor.execute(eventLoader);
@@ -1064,24 +931,24 @@ public class code_swarm extends PApplet {
     if (mPhysicsEngineChoices.size() > 1 && safeToToggle) {
       boolean found = false;
       for (int i = 0; i < mPhysicsEngineChoices.size() && !found; i++) {
-        if (mPhysicsEngineChoices.get(i).pe == mPhysicsEngine) {
+        if (mPhysicsEngineChoices.get(i) == mPhysicsEngine) {
           found = true;
           wantToToggle = false;
           if (direction == true) {
             if ((i+1) < mPhysicsEngineChoices.size()) {
-              mPhysicsEngine=mPhysicsEngineChoices.get(i+1).pe;
-              physicsEngineSelection=mPhysicsEngineChoices.get(i+1).name;
+              mPhysicsEngine=mPhysicsEngineChoices.get(i+1);
+              physicsEngineSelection=mPhysicsEngineChoices.get(i+1).getName();
             } else {
-              mPhysicsEngine=mPhysicsEngineChoices.get(0).pe;
-              physicsEngineSelection=mPhysicsEngineChoices.get(0).name;
+              mPhysicsEngine=mPhysicsEngineChoices.get(0);
+              physicsEngineSelection=mPhysicsEngineChoices.get(0).getName();
             }
           } else {
             if ((i-1) >= 0) {
-              mPhysicsEngine=mPhysicsEngineChoices.get(i-1).pe;
-              physicsEngineSelection=mPhysicsEngineChoices.get(i-1).name;
+              mPhysicsEngine=mPhysicsEngineChoices.get(i-1);
+              physicsEngineSelection=mPhysicsEngineChoices.get(i-1).getName();
             } else {
-              mPhysicsEngine=mPhysicsEngineChoices.get(mPhysicsEngineChoices.size()-1).pe;
-              physicsEngineSelection=mPhysicsEngineChoices.get(mPhysicsEngineChoices.size()-1).name;
+              mPhysicsEngine=mPhysicsEngineChoices.get(mPhysicsEngineChoices.size()-1);
+              physicsEngineSelection=mPhysicsEngineChoices.get(mPhysicsEngineChoices.size()-1).getName();
             }
           }
         }
@@ -1100,83 +967,6 @@ public class code_swarm extends PApplet {
     looping = !looping;
   }
 
-  private class XMLQueueLoader implements Runnable {
-    private final String fullFilename;
-    private BlockingQueue<FileEvent> queue;
-    boolean isXMLSorted;
-
-    private XMLQueueLoader(String fullFilename, BlockingQueue<FileEvent> queue, boolean isXMLSorted) {
-      this.fullFilename = fullFilename;
-      this.queue = queue;
-      this.isXMLSorted = isXMLSorted;
-    }
-
-    public void run(){
-      XMLReader reader = null;
-      try {
-        reader = XMLReaderFactory.createXMLReader();
-      } catch (SAXException e) {
-        System.out.println("Couldn't find/create an XML SAX Reader");
-        e.printStackTrace();
-        System.exit(1);
-      }
-      reader.setContentHandler(new DefaultHandler(){
-        public void startElement(String uri, String localName, String name,
-            Attributes atts) throws SAXException {
-          if (name.equals("event")){
-            String eventFilename = atts.getValue("filename");
-            String eventDatestr = atts.getValue("date");
-            long eventDate = Long.parseLong(eventDatestr);
-            String eventWeightStr = atts.getValue("weight");
-            int eventWeight = 1;
-            if (eventWeightStr != null) {
-              eventWeight = Integer.parseInt(eventWeightStr);
-            }
-
-            //It's difficult for the user to tell that they're missing events,
-            //so we should crash in this case
-            if (isXMLSorted){
-              if (eventDate < maximumDateSeenSoFar){
-                System.out.println("Input not sorted, you must set IsInputSorted to false in your config file");
-                System.exit(1);
-              }
-              else
-                maximumDateSeenSoFar = eventDate;
-            }
-
-            String eventAuthor = atts.getValue("author");
-            // int eventLinesAdded = atts.getValue( "linesadded" );
-            // int eventLinesRemoved = atts.getValue( "linesremoved" );
-
-            FileEvent evt = new FileEvent(eventDate, eventAuthor, "", eventFilename, eventWeight);
-            try {
-              queue.put(evt);
-            } catch (InterruptedException e) {
-              // TODO Auto-generated catch block
-              System.out.println("Interrupted while trying to put into eventsQueue");
-              e.printStackTrace();
-              System.exit(1);
-            }
-          }
-        }
-        public void endDocument(){
-          finishedLoading = true;
-        }
-      });
-      try {
-        reader.parse(fullFilename);
-      } catch (Exception e) {
-        // TODO Auto-generated catch block
-        System.out.println("Error parsing xml:");
-        e.printStackTrace();
-        System.exit(1);
-      }
-    }
-  }
-
-  class Utils {
-    Utils () {
-    }
     /**
        * Draws a point.
        * @param x
@@ -1209,381 +999,34 @@ public class code_swarm extends PApplet {
       strokeWeight(1.5f);
       line(fromX, fromY, toX, toY);
     }
-  }
-
+  
   /**
-   * Class to associate the Physics Engine name to the
-   * Physics Engine interface
+   * Returns the height of the code swarm component.
+   * 
+   * @return int height of the code swarm component
    */
-  class peConfig {
-    protected String name;
-    protected PhysicsEngine pe;
-
-    peConfig(String n, PhysicsEngine p) {
-      name = n;
-      pe = p;
-    }
+  public static int getCodeSwarmHeight(){
+	  return height;
   }
-
-
+  
   /**
-   * Describe an event on a file
+   * Returns the width of the code swarm component.
+   * 
+   * @return int width of the code swarm component
    */
-  class FileEvent implements Comparable<Object> {
-    Date date;
-    String author;
-    String filename;
-    String path;
-    //int linesadded;
-    //int linesremoved;
-    int weight;
-
-    /**
-     * short constructor with base data
-     */
-    FileEvent(long datenum, String author, String path, String filename) {
-      this(datenum, author, path, filename, 1);
-    }
-
-    /**
-     * constructor with weight
-     */
-    FileEvent(long datenum, String author, String path, String filename, int weight) {
-      this.date = new Date(datenum);
-      this.author = author;
-      this.path = path;
-      this.filename = filename;
-      this.weight = weight;
-    }
-
-    /**
-     * Comparing two events by date (Not Used)
-     * @param o
-     * @return -1 if <, 0 if =, 1 if >
-     */
-    public int compareTo(Object o) {
-      return date.compareTo(((FileEvent) o).date);
-    }
+  public static int getCodeSwarmWidth(){
+	  return width;
   }
-
-  /**
-   * Base class for all drawable objects
-   *
-   *        Lists and implements features common to all drawable objects
-   *        Edge and Node, FileNode and PersonNode
-   */
-  abstract class Drawable {
-    public int life;
-
-    final public int LIFE_INIT;
-    final public int LIFE_DECREMENT;
-    /**
-     * 1) constructor(s)
-     *
-     * Init jobs common to all objects
-     */
-    Drawable(int lifeInit, int lifeDecrement) {
-      // save config vars
-      LIFE_INIT      = lifeInit;
-      LIFE_DECREMENT = lifeDecrement;
-      // init life relative vars
-      life           = LIFE_INIT;
-    }
-
-    /**
-     *  4) shortening life.
-     */
-    public void decay() {
-      if (isAlive()) {
-        life += LIFE_DECREMENT;
-        if (life < 0) {
-          life = 0;
-        }
-      }
-    }
-
-    /**
-     * 5) drawing the new state => done in derived class.
-     */
-    public abstract void draw();
-
-    /**
-     * 6) reseting life as if new.
-     */
-    public abstract void freshen();
-
-    /**
-     * @return true if life > 0
-     */
-    public boolean isAlive() {
-      return life > 0;
-    }
-
-  }
-
-  /**
-   * An Edge link two nodes together : a File to a Person.
-   */
-  class Edge extends Drawable {
-    protected FileNode nodeFrom;
-    protected PersonNode nodeTo;
-    protected float len;
-
-    /**
-     * 1) constructor.
-     * @param from FileNode
-     * @param to PersonNode
-     */
-    Edge(FileNode from, PersonNode to) {
-      super(EDGE_LIFE_INIT, EDGE_LIFE_DECREMENT);
-      this.nodeFrom = from;
-      this.nodeTo   = to;
-      this.len      = EDGE_LEN;  // 25
-    }
-
-    /**
-     * 5) drawing the new state.
-     */
-    public void draw() {
-      if (life > 240) {
-        stroke(255, life);
-        strokeWeight(0.35f);
-        line(nodeFrom.mPosition.x, nodeFrom.mPosition.y, nodeTo.mPosition.x, nodeTo.mPosition.y);
-      }
-    }
-
-    public void freshen() {
-      life = EDGE_LIFE_INIT;
-    }
-  }
-
-  /**
-   * A node is an abstraction for a File or a Person.
-   */
-  public abstract class Node extends Drawable {
-    protected String name;
-    protected Vector2f mPosition;
-    protected Vector2f mSpeed;
-    protected float maxSpeed = DEFAULT_NODE_SPEED;
-
-    /**
-     * mass of the node
-     */
-    protected float mass;
-
-    /**
-     * 1) constructor.
-     */
-    Node(int lifeInit, int lifeDecrement) {
-      super(lifeInit, lifeDecrement);
-      mPosition = new Vector2f();
-      mSpeed = new Vector2f();
-    }
-
-  }
-
-  /**
-   * A node describing a file, which is repulsed by other files.
-   */
-  class FileNode extends Node implements Comparable<FileNode> {
-    private int nodeHue;
-    private int minBold;
-    protected int touches;
-
-    /**
-     * @return file node as a string
-     */
-    public String toString() {
-      return "FileNode{" + "name='" + name + '\'' + ", nodeHue=" + nodeHue + ", touches=" + touches + '}';
-    }
-
-    /**
-     * 1) constructor.
-     */
-    FileNode(FileEvent fe) {
-      super(FILE_LIFE_INIT, FILE_LIFE_DECREMENT); // 255, -2
-      name = fe.path + fe.filename;
-      touches = fe.weight;
-      life = FILE_LIFE_INIT;
-      colorMode(RGB);
-      minBold = (int)(FILE_LIFE_INIT * ((100.0f - HIGHLIGHT_PCT)/100));
-      nodeHue = colorAssigner.getColor(name);
-      mass = FILE_MASS;
-      maxSpeed = DEFAULT_FILE_SPEED;
-      mPosition.set(mPhysicsEngine.fStartLocation());
-      mSpeed.set(mPhysicsEngine.fStartVelocity(mass));
-    }
-
-    /**
-     * 5) drawing the new state.
-     */
-    public void draw() {
-      if (life > 0) {
-        if (drawFilesSharp) {
-          drawSharp();
-        }
-        if (drawFilesFuzzy) {
-          drawFuzzy();
-        }
-        if (drawFilesJelly) {
-          drawJelly();
-        }
-
-        /** TODO : this would become interesting on some special event, or for special materials
-         * colorMode( RGB ); fill( 0, life ); textAlign( CENTER, CENTER ); text( name, x, y );
-         * Example below:
-         */
-        if (showPopular) {
-          textAlign( CENTER, CENTER );
-          if (this.qualifies()) {
-            text(touches, mPosition.x, mPosition.y - (8 + (int)Math.sqrt(touches)));
-          }
-        }
-      }
-    }
-
-    /**
-     * 6) reseting life as if new.
-     */
-    public void freshen() {
-      life = FILE_LIFE_INIT;
-      if (++touches > maxTouches) {
-        maxTouches = touches;
-      }
-    }
-
-    /**
-     * reset life and add event weight to touches
-     */
-    public void freshen( FileEvent fe ) {
-      life = FILE_LIFE_INIT;
-      touches += fe.weight;
-
-      // do not allow negative touches
-      if ( touches < 0 )
-        touches = 0;
-      if ( touches > maxTouches )
-        maxTouches = touches;
-    }
-
-    public boolean qualifies() {
-      if (this.touches >= (maxTouches * 0.5f)) {
-        return true;
-      }
-      return false;
-    }
-
-    public int compareTo(FileNode fn) {
-      int retval = 0;
-      if (this.touches < fn.touches) {
-        retval = -1;
-      } else if (this.touches > fn.touches) {
-        retval = 1;
-      }
-      return retval;
-    }
-
-    public void drawSharp() {
-      colorMode(RGB);
-      fill(nodeHue, life);
-      float w = 3;
-
-      if (life >= minBold) {
-        stroke(255, 128);
-        w *= 2;
-      } else {
-        noStroke();
-      }
-
-      ellipseMode(CENTER);
-      ellipse(mPosition.x, mPosition.y, w, w);
-    }
-
-    public void drawFuzzy() {
-      tint(nodeHue, life);
-
-      float w = 8 + (sqrt(touches) * 4);
-      // not used float dubw = w * 2;
-      float halfw = w / 2;
-      if (life >= minBold) {
-        colorMode(HSB);
-        tint(hue(nodeHue), saturation(nodeHue) - 192, 255, life);
-        // image( sprite, x - w, y - w, dubw, dubw );
-      }
-      // else
-      image(sprite, mPosition.x - halfw, mPosition.y - halfw, w, w);
-    }
-
-    public void drawJelly() {
-      noFill();
-      if (life >= minBold)
-        stroke(255);
-      else
-        stroke(nodeHue, life);
-      float w = sqrt(touches);
-      ellipseMode(CENTER);
-      ellipse(mPosition.x, mPosition.y, w, w);
-    }
-  }
-
-  /**
-   * A node describing a person, which is repulsed by other persons.
-   */
-  class PersonNode extends Node {
-    private int flavor = color(0);
-    private int colorCount = 1;
-    private int minBold;
-    protected int touches;
-
-    /**
-     * 1) constructor.
-     */
-    PersonNode(String n) {
-      super(PERSON_LIFE_INIT, PERSON_LIFE_DECREMENT); // -1
-      maxSpeed = DEFAULT_PERSON_SPEED;
-      name = n;
-      minBold = (int)(PERSON_LIFE_INIT * (1 - ((float) HIGHLIGHT_PCT)/100));
-      mass = PERSON_MASS; // bigger mass to person then to node, to stabilize them
-      touches = 1;
-      mPosition.set(mPhysicsEngine.pStartLocation());
-      mSpeed.set(mPhysicsEngine.pStartVelocity(mass));
-    }
-
-    /**
-     * 5) drawing the new state.
-     */
-    public void draw() {
-      if (isAlive()) {
-        textAlign(CENTER, CENTER);
-
-        /** TODO: proportional font size, or light intensity,
-                  or some sort of thing to disable the flashing */
-        if (life >= minBold)
-          textFont(boldFont);
-        else
-          textFont(font);
-
-        text(name, mPosition.x, mPosition.y);
-      }
-    }
-
-    public void freshen () {
-      life = PERSON_LIFE_INIT;
-      touches++;
-    }
-
-    public void addColor(int c) {
-      colorMode(RGB);
-      flavor = lerpColor(flavor, c, 1.0f / colorCount);
-      colorCount++;
-    }
+  
+  public static CodeSwarmConfig getConfig(){
+	  return cfg;
   }
 
   /**
    * code_swarm Entry point.
    * @param args : should be the path to the config file
    */
-  static public void main(String args[]) {
+  public static void main(String args[]) {
     try {
       if (args.length > 0) {
         System.out.println("code_swarm is free software: you can redistribute it and/or modify");
@@ -1610,5 +1053,42 @@ public class code_swarm extends PApplet {
   public static void start(CodeSwarmConfig config){
     cfg = config;
     PApplet.main(new String[]{"code_swarm"});
+  }
+
+  @Override
+  public void fireTaskDoneEvent() {
+		finishedLoading = true;
+  }
+  
+  public static PFont getBoldPFont(){
+	  return boldFont;
+  }
+  
+  public static PFont getPFont(){
+	  return font;
+  }
+  
+  public PImage getSprite(){
+	  return sprite;
+  }
+  
+  public boolean isDrawFilesSharp(){
+	  return drawFilesSharp;
+  }
+  
+  public boolean isDrawFilesFuzzy(){
+	  return drawFilesFuzzy;
+  }
+  
+  public boolean isDrawFilesJelly(){
+	  return drawFilesJelly;
+  }
+  
+  public boolean isShowPopular(){
+	  return showPopular;
+  }
+  
+  public ColorAssigner getColorAssigner(){
+	  return colorAssigner;
   }
 }
