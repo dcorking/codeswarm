@@ -1,7 +1,7 @@
-package codeswarm;
+package codeswarm.processing;
 
 /*
-   Copyright 2008 Michael Ogawa
+   Copyright 2008-2009 code_swarm project team
 
    This file is part of code_swarm.
 
@@ -26,11 +26,11 @@ import java.util.regex.Pattern;
 import processing.core.PApplet;
 import processing.core.PConstants;
 
-class ColorTest
+public class ColorTest
 {
-	Pattern expr;
-	String label;
-	int c1, c2;
+	private Pattern expr;
+	private String label;
+	private int c1, c2;
 
 	public boolean passes( String s )
 	{
@@ -52,11 +52,11 @@ class ColorTest
 		int lastQ = value.lastIndexOf( '\"' );
 		String firstpart = value.substring( firstQ + 1, lastQ );
 		tokens = firstpart.split( "\"" );
-        label = tokens[0];
+		label = tokens[0];
 		if (tokens.length == 3) {
-          expr = Pattern.compile( tokens[2] );
+			expr = Pattern.compile( tokens[2] );
 		} else {
-          expr = Pattern.compile( tokens[0] );
+			expr = Pattern.compile( tokens[0] );
 		}
 		// then the comma delimited colors
 		String rest = value.substring( lastQ + 1 );
@@ -74,6 +74,30 @@ class ColorTest
 		}
 		c1 = new Color( components[0], components[1], components[2] ).getRGB();
 		c2 = new Color( components[3], components[4], components[5] ).getRGB();
+	}
+	
+	public void setExpr(Pattern expr){
+		this.expr = expr;
+	}
+	
+	public void setLabel(String label){
+		this.label = label;
+	}
+	
+	public String getLabel(){
+		return label;
+	}
+	
+	public void setC1(int c1){
+		this.c1 = c1;
+	}
+	
+	public int getC1(){
+		return c1;
+	}
+	
+	public void setC2(int c2){
+		this.c2 = c2;
 	}
 
 	public static void main( String [] args )

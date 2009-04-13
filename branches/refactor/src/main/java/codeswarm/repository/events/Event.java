@@ -1,6 +1,9 @@
 package codeswarm.repository.events;
 
-/* This file is part of code_swarm.
+/*
+Copyright 2008-2009 code_swarm project team
+
+This file is part of code_swarm.
 
 code_swarm is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -21,60 +24,61 @@ along with code_swarm.  If not, see <http://www.gnu.org/licenses/>.
  * @author tpraxl
  */
 public class Event {
-    private String filename;
-    private long date;
-    private String author;
-    /**
-     * creates an instance.
-     * @param filename the path of the file that was changed
-     * @param date the date of modification
-     * @param author the user that changed the file
-     */
-    public Event(String filename, long date, String author){
-        this.filename = filename;
-        this.date = date;
-        this.author = author;
-    }
+	private String filename;
+	private long date;
+	private String author;
 
-    /**
-     * @return the filename
-     */
-    public String getFilename() {
-        return filename;
-    }
+	/**
+	 * creates an instance.
+	 * @param filename the path of the file that was changed
+	 * @param date the date of modification
+	 * @param author the user that changed the file
+	 */
+	public Event(String filename, long date, String author){
+		this.filename = filename;
+		this.date = date;
+		this.author = author;
+	}
 
-    /**
-     * @param filename the filename to set
-     */
-    public void setFilename(String filename) {
-        this.filename = filename;
-    }
+	/**
+	 * @return the filename
+	 */
+	public String getFilename() {
+		return filename;
+	}
 
-    /**
-     * @return the date
-     */
-    public long getDate() {
-        return date;
-    }
+	/**
+	 * @param filename the filename to set
+	 */
+	public void setFilename(String filename) {
+		this.filename = filename;
+	}
 
-    /**
-     * @param date the date to set
-     */
-    public void setDate(long date) {
-        this.date = date;
-    }
+	/**
+	 * @return the date
+	 */
+	public long getDate() {
+		return date;
+	}
 
-    /**
-     * @return the author
-     */
-    public String getAuthor() {
-        return author;
-    }
+	/**
+	 * @param date the date to set
+	 */
+	public void setDate(long date) {
+		this.date = date;
+	}
 
-    /**
-     * @param author the author to set
-     */
-    public void setAuthor(String author) {
-        this.author = author;
-    }
+	/**
+	 * @return the author
+	 */
+	public String getAuthor() {
+		return author;
+	}
+
+	/**
+	 * @param author the author to set
+	 */
+	public void setAuthor(String author) {
+		this.author = author;
+	}
 }

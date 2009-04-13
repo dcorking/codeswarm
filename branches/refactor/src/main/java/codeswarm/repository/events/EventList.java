@@ -1,6 +1,9 @@
 package codeswarm.repository.events;
 
-/* This file is part of code_swarm.
+/*
+Copyright 2008-2009 code_swarm project team
+
+This file is part of code_swarm.
 
 code_swarm is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -14,7 +17,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with code_swarm.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,7 +29,8 @@ import java.util.List;
  * @author tpraxl
  */
 public class EventList {
-    List<Event> events = new ArrayList<Event>();
+    private List<Event> events = new ArrayList<Event>();
+    
     /**
      * add an entry to the list.
      * @param e the repository Event / log entry to add (not null)
@@ -34,12 +38,14 @@ public class EventList {
     public void addEvent(Event e){
         events.add(e);
     }
+    
     /**
      * @return an iterator-view of the list
      */
     public Iterator<Event> iterator(){
         return events.iterator();
     }
+    
     /**
      * @return an unmodifiableList-View of the list
      */

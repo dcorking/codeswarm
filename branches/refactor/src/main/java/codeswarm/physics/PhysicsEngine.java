@@ -1,7 +1,7 @@
 package codeswarm.physics;
 
-/**
- * Copyright 2008 code_swarm project team
+/*
+ * Copyright 2008-2009 code_swarm project team
  *
  * This file is part of code_swarm.
  *
@@ -23,10 +23,10 @@ import java.util.Properties;
 
 import javax.vecmath.Vector2f;
 
-import codeswarm.Edge;
-import codeswarm.FileNode;
-import codeswarm.PersonNode;
 import codeswarm.code_swarm;
+import codeswarm.processing.Edge;
+import codeswarm.processing.FileNode;
+import codeswarm.processing.PersonNode;
 
 /**
  * Abstract interface of any code_swarm physical engine.
@@ -41,7 +41,7 @@ public abstract class PhysicsEngine
 
 	private String name;
 	protected code_swarm drawableArea;
-	
+
 	public PhysicsEngine(code_swarm drawable){
 		drawableArea = drawable;
 	}

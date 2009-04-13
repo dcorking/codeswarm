@@ -1,7 +1,7 @@
-package codeswarm;
+package codeswarm.processing;
 
 /*
-   Copyright 2008 Michael Ogawa
+   Copyright 2008-2009 code_swarm project team
 
    This file is part of code_swarm.
 
@@ -19,15 +19,14 @@ package codeswarm;
    along with code_swarm.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-//not used: import processing.core.PApplet;
 import java.awt.Color;
 import java.util.ArrayList;
 
-class ColorAssigner
+public class ColorAssigner
 {
-	ArrayList<ColorTest> tests;
-	//int defaultColor = PApplet.color(128, 128, 128);
-	int defaultColor = Color.gray.getRGB();
+	private ArrayList<ColorTest> tests;
+	//private int defaultColor = PApplet.color(128, 128, 128);
+	private int defaultColor = Color.gray.getRGB();
 
 	public ColorAssigner()
 	{
@@ -37,10 +36,10 @@ class ColorAssigner
 	public void addRule( String label, String expr, int c1, int c2 )
 	{
 		ColorTest t = new ColorTest();
-		t.expr = java.util.regex.Pattern.compile( expr );
-		t.label = label;
-		t.c1 = c1;
-		t.c2 = c2;
+		t.setExpr(java.util.regex.Pattern.compile( expr ));
+		t.setLabel(label);
+		t.setC1(c1);
+		t.setC2(c2);
 		addRule( t );
 	}
 
@@ -58,6 +57,10 @@ class ColorAssigner
 		}
 
 		return defaultColor;
+	}
+	
+	public ArrayList<ColorTest> getTests(){
+		return tests;
 	}
 }
 

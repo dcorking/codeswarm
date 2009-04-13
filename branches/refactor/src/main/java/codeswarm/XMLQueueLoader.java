@@ -1,5 +1,24 @@
 package codeswarm;
 
+/*
+Copyright 2008-2009 code_swarm project team
+
+This file is part of code_swarm.
+
+code_swarm is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+code_swarm is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with code_swarm.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import java.util.Iterator;
 import java.util.concurrent.BlockingQueue;
 
@@ -8,6 +27,8 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
+
+import codeswarm.processing.FileEvent;
 
 public class XMLQueueLoader implements Runnable {
 	private final String fullFilename;
@@ -23,15 +44,15 @@ public class XMLQueueLoader implements Runnable {
 		this.queue = queue;
 		this.isXMLSorted = isXMLSorted;
 	}
-	
+
 	public void addTaskListener(TaskListener listener){
 		listenerList.add(listener);
 	}
-	
+
 	public void removeTaskListener(TaskListener listener){
 		listenerList.remove(listenerList);
 	}
-	
+
 	private void fireTaskDoneEvent(){
 		Iterator<TaskListener> it = listenerList.iterator();
 		while(it.hasNext()){
@@ -48,7 +69,7 @@ public class XMLQueueLoader implements Runnable {
 			e.printStackTrace();
 			System.exit(1);
 		}
-		
+
 		reader.setContentHandler(new DefaultHandler(){
 			public void startElement(String uri, String localName, String name,
 					Attributes atts) throws SAXException {
@@ -88,13 +109,13 @@ public class XMLQueueLoader implements Runnable {
 					}
 				}
 			}
-			
+
 			public void endDocument(){
 				fireTaskDoneEvent();
 			}
-			
+
 		});
-		
+
 		try {
 			reader.parse(fullFilename);
 		} catch (Exception e) {
@@ -104,5 +125,5 @@ public class XMLQueueLoader implements Runnable {
 			System.exit(1);
 		}
 	}
-	
+
 }
