@@ -1,7 +1,7 @@
 package codeswarm.physics;
 
-/**
- * Copyright 2008 code_swarm project team
+/*
+ * Copyright 2008-2009 code_swarm project team
  *
  * This file is part of code_swarm.
  *
@@ -23,11 +23,11 @@ import java.util.Properties;
 
 import javax.vecmath.Vector2f;
 
-import codeswarm.Edge;
-import codeswarm.FileNode;
-import codeswarm.Node;
-import codeswarm.PersonNode;
 import codeswarm.code_swarm;
+import codeswarm.processing.Edge;
+import codeswarm.processing.FileNode;
+import codeswarm.processing.Node;
+import codeswarm.processing.PersonNode;
 
 /**
  * @brief Simple algorithms describing all physicals interactions between nodes (files and persons)
@@ -39,297 +39,296 @@ import codeswarm.code_swarm;
 public class PhysicsEngineSimple extends PhysicsEngine
 {
 
-  private Properties cfg;
+	private Properties cfg;
+	private float FORCE_EDGE_MULTIPLIER;
+	private float FORCE_NODES_MULTIPLIER;
+	private float FORCE_TO_SPEED_MULTIPLIER;
+	private float SPEED_TO_POSITION_MULTIPLIER;
 
-  private float FORCE_EDGE_MULTIPLIER;
-  private float FORCE_NODES_MULTIPLIER;
-  private float FORCE_TO_SPEED_MULTIPLIER;
-  private float SPEED_TO_POSITION_MULTIPLIER;
+	public PhysicsEngineSimple(code_swarm drawable) {
+		super(drawable);
+	}
 
-  public PhysicsEngineSimple(code_swarm drawable) {
-	  super(drawable);
-  }
+	/**
+	 * Method for initializing parameters.
+	 * @param p Properties from the config file.
+	 */
+	//PhysicalEngineSimple(float forceEdgeMultiplier, float forceToSpeedMultiplier, float speedToPositionDrag)
+	public void setup (java.util.Properties p)
+	{
+		cfg = p;
+		FORCE_EDGE_MULTIPLIER = Float.parseFloat(cfg.getProperty("edgeMultiplier","1.0"));
+		FORCE_NODES_MULTIPLIER = Float.parseFloat(cfg.getProperty("nodesMultiplier","1.0"));
+		FORCE_TO_SPEED_MULTIPLIER = Float.parseFloat(cfg.getProperty("speedMultiplier","1.0"));
+		SPEED_TO_POSITION_MULTIPLIER = Float.parseFloat(cfg.getProperty("drag","0.5"));
+	}
 
-  /**
-   * Method for initializing parameters.
-   * @param p Properties from the config file.
-   */
-  //PhysicalEngineSimple(float forceEdgeMultiplier, float forceToSpeedMultiplier, float speedToPositionDrag)
-  public void setup (java.util.Properties p)
-  {
-    cfg = p;
-    FORCE_EDGE_MULTIPLIER = Float.parseFloat(cfg.getProperty("edgeMultiplier","1.0"));
-    FORCE_NODES_MULTIPLIER = Float.parseFloat(cfg.getProperty("nodesMultiplier","1.0"));
-    FORCE_TO_SPEED_MULTIPLIER = Float.parseFloat(cfg.getProperty("speedMultiplier","1.0"));
-    SPEED_TO_POSITION_MULTIPLIER = Float.parseFloat(cfg.getProperty("drag","0.5"));
-  }
+	/**
+	 * Simple method that calculate the attractive/repulsive force between a person and one of its file along their link (the edge).
+	 *
+	 * @param edge the link between a person and one of its file
+	 * @return force force calculated between those two nodes
+	 */
+	private Vector2f calculateForceAlongAnEdge(Edge edge)
+	{
+		float distance;
+		float deltaDistance;
+		Vector2f force = new Vector2f();
+		Vector2f tforce = new Vector2f();
 
-  /**
-   * Simple method that calculate the attractive/repulsive force between a person and one of its file along their link (the edge).
-   *
-   * @param edge the link between a person and one of its file
-   * @return force force calculated between those two nodes
-   */
-  private Vector2f calculateForceAlongAnEdge(Edge edge)
-  {
-    float distance;
-    float deltaDistance;
-    Vector2f force = new Vector2f();
-    Vector2f tforce = new Vector2f();
+		// distance calculation
+		tforce.sub( edge.getNodeTo().getMPosition(), edge.getNodeFrom().getMPosition());
+		distance = tforce.length();
+		// force calculation (increase when distance is different from targeted len)
+		deltaDistance = (edge.getLen() - distance);
+		// force projection onto x and y axis
+		tforce.scale( deltaDistance * FORCE_EDGE_MULTIPLIER );
+		force.set(tforce);
 
-    // distance calculation
-    tforce.sub( edge.getNodeTo().getMPosition(), edge.getNodeFrom().getMPosition());
-    distance = tforce.length();
-    // force calculation (increase when distance is different from targeted len)
-    deltaDistance = (edge.getLen() - distance);
-    // force projection onto x and y axis
-    tforce.scale( deltaDistance * FORCE_EDGE_MULTIPLIER );
-    force.set(tforce);
+		return force;
+	}
 
-    return force;
-  }
+	/**
+	 * Simple method that calculate the repulsive force between two similar nodes (either files or persons).
+	 *
+	 * @param nodeA [in]
+	 * @param nodeB [in]
+	 * @return force force calculated between those two nodes
+	 */
+	private Vector2f calculateForceBetweenNodes(Node nodeA, Node nodeB)
+	{
+		float distance;
+		Vector2f force = new Vector2f();
+		Vector2f normVec = new Vector2f();
 
-  /**
-   * Simple method that calculate the repulsive force between two similar nodes (either files or persons).
-   *
-   * @param nodeA [in]
-   * @param nodeB [in]
-   * @return force force calculated between those two nodes
-   */
-  private Vector2f calculateForceBetweenNodes(Node nodeA, Node nodeB)
-  {
-    float distance;
-    Vector2f force = new Vector2f();
-    Vector2f normVec = new Vector2f();
+		/**
+		 * Get the distance between nodeA and nodeB
+		 */
+		normVec.sub(nodeA.getMPosition(), nodeB.getMPosition());
+		distance = normVec.length();
+		if (distance > 0) {
+			// No collision
+			normVec.scale(1/distance * FORCE_NODES_MULTIPLIER);
+			force.set(normVec);
+		}
 
-    /**
-     * Get the distance between nodeA and nodeB
-     */
-    normVec.sub(nodeA.getMPosition(), nodeB.getMPosition());
-    distance = normVec.length();
-    if (distance > 0) {
-      // No collision
-      normVec.scale(1/distance * FORCE_NODES_MULTIPLIER);
-      force.set(normVec);
-    }
+		return force;
+	}
 
-    return force;
-  }
+	/**
+	 * Simple method that apply a force to a node, converting acceleration to speed.
+	 *
+	 * @param node [in] Node the node to which the force apply
+	 * @param force [in] force a force Vector representing the force on a node
+	 *
+	 * TODO: does force should be a property of the node (or not?)
+	 */
+	private void applyForceTo(Node node, Vector2f force)
+	{
+		float dlen;
+		Vector2f mod = new Vector2f();
 
-  /**
-   * Simple method that apply a force to a node, converting acceleration to speed.
-   *
-   * @param node [in] Node the node to which the force apply
-   * @param force [in] force a force Vector representing the force on a node
-   *
-   * TODO: does force should be a property of the node (or not?)
-   */
-  private void applyForceTo(Node node, Vector2f force)
-  {
-    float dlen;
-    Vector2f mod = new Vector2f();
+		/** TODO: add comment to this algorithm */
+		dlen = force.length();
+		if ( (dlen > 0) && (node.getMass() > 0)) {
+			mod.set(((force.x / (node.getMass() / dlen)) * FORCE_TO_SPEED_MULTIPLIER),
+					((force.y / (node.getMass() / dlen)) * FORCE_TO_SPEED_MULTIPLIER));
+			node.getMSpeed().add(mod);
+		}
+	}
 
-    /** TODO: add comment to this algorithm */
-    dlen = force.length();
-    if ( (dlen > 0) && (node.getMass() > 0)) {
-      mod.set(((force.x / (node.getMass() / dlen)) * FORCE_TO_SPEED_MULTIPLIER),
-              ((force.y / (node.getMass() / dlen)) * FORCE_TO_SPEED_MULTIPLIER));
-      node.getMSpeed().add(mod);
-    }
-  }
+	/**
+	 * Simple method that apply a force to a node, converting acceleration to speed.
+	 *
+	 * @param node the node to which the force apply
+	 */
+	private void applySpeedTo(Node node)
+	{
+		float div;
+		// This block enforces a maximum absolute velocity.
+		// TODO : I want to remove all this
+		if (node.getMSpeed().length() > node.getMaxSpeed()) {
+			Vector2f mag = new Vector2f(node.getMSpeed().x / node.getMaxSpeed(), node.getMSpeed().y / node.getMaxSpeed());
+			div = mag.length();
+			node.getMSpeed().scale( 1/div );
+		}
 
-  /**
-   * Simple method that apply a force to a node, converting acceleration to speed.
-   *
-   * @param node the node to which the force apply
-    */
-  private void applySpeedTo(Node node)
-  {
-    float div;
-    // This block enforces a maximum absolute velocity.
-    // TODO : I want to remove all this
-    if (node.getMSpeed().length() > node.getMaxSpeed()) {
-      Vector2f mag = new Vector2f(node.getMSpeed().x / node.getMaxSpeed(), node.getMSpeed().y / node.getMaxSpeed());
-      div = mag.length();
-      node.getMSpeed().scale( 1/div );
-    }
+		// This block convert Speed to Position
+		node.getMPosition().add(node.getMSpeed());
 
-    // This block convert Speed to Position
-    node.getMPosition().add(node.getMSpeed());
+		// Apply drag (reduce Speed for next frame calculation)
+		node.getMSpeed().scale( SPEED_TO_POSITION_MULTIPLIER );
+	}
 
-    // Apply drag (reduce Speed for next frame calculation)
-    node.getMSpeed().scale( SPEED_TO_POSITION_MULTIPLIER );
-  }
+	/**
+	 *  Do nothing.
+	 */
+	public void initializeFrame() {
+	}
 
-  /**
-   *  Do nothing.
-   */
-  public void initializeFrame() {
-  }
+	/**
+	 *  Do nothing.
+	 */
+	public void finalizeFrame() {
+	}
 
-  /**
-   *  Do nothing.
-   */
-  public void finalizeFrame() {
-  }
+	/**
+	 * Method that allows Physics Engine to modify forces between files and people during the relax stage
+	 *
+	 * @param edge the edge to which the force apply (both ends)
+	 *
+	 * @Note Standard physics is "Position Variation = Speed x Duration" with a convention of "Duration=1" between to frames
+	 */
+	public void onRelaxEdge(Edge edge) {
+		Vector2f force    = new Vector2f();
 
-  /**
-   * Method that allows Physics Engine to modify forces between files and people during the relax stage
-   *
-   * @param edge the edge to which the force apply (both ends)
-   *
-   * @Note Standard physics is "Position Variation = Speed x Duration" with a convention of "Duration=1" between to frames
-   */
-  public void onRelaxEdge(Edge edge) {
-    Vector2f force    = new Vector2f();
+		// Calculate force between the node "from" and the node "to"
+		force = calculateForceAlongAnEdge(edge);
 
-    // Calculate force between the node "from" and the node "to"
-    force = calculateForceAlongAnEdge(edge);
+		// transmit (applying) fake force projection to file and person nodes
+		applyForceTo(edge.getNodeTo(), force);
+		force.negate(); // force is inverted for the other end of the edge
+		applyForceTo(edge.getNodeFrom(), force);
+	}
 
-    // transmit (applying) fake force projection to file and person nodes
-    applyForceTo(edge.getNodeTo(), force);
-    force.negate(); // force is inverted for the other end of the edge
-    applyForceTo(edge.getNodeFrom(), force);
-  }
+	/**
+	 * Method that allows Physics Engine to modify Speed / Position during the relax phase.
+	 *
+	 * @param fNode the node to which the force apply
+	 *
+	 * @Note Standard physics is "Position Variation = Speed x Duration" with a convention of "Duration=1" between to frames
+	 */
+	public void onRelaxNode(FileNode fNode) {
+		Vector2f forceBetweenFiles = new Vector2f();
+		Vector2f forceSummation    = new Vector2f();
 
-  /**
-   * Method that allows Physics Engine to modify Speed / Position during the relax phase.
-   *
-   * @param fNode the node to which the force apply
-   *
-   * @Note Standard physics is "Position Variation = Speed x Duration" with a convention of "Duration=1" between to frames
-   */
-  public void onRelaxNode(FileNode fNode) {
-    Vector2f forceBetweenFiles = new Vector2f();
-    Vector2f forceSummation    = new Vector2f();
+		// Calculation of repulsive force between persons
+		for (FileNode n : code_swarm.getLivingNodes()) {
+			if (n != fNode) {
+				// elemental force calculation, and summation
+				forceBetweenFiles = calculateForceBetweenNodes(fNode, n);
+				forceSummation.add(forceBetweenFiles);
+			}
+		}
+		// Apply repulsive force from other files to this Node
+		applyForceTo(fNode, forceSummation);
+	}
 
-    // Calculation of repulsive force between persons
-    for (FileNode n : code_swarm.getLivingNodes()) {
-      if (n != fNode) {
-        // elemental force calculation, and summation
-        forceBetweenFiles = calculateForceBetweenNodes(fNode, n);
-        forceSummation.add(forceBetweenFiles);
-      }
-    }
-    // Apply repulsive force from other files to this Node
-    applyForceTo(fNode, forceSummation);
-  }
+	/**
+	 * Method that allows Physics Engine to modify Speed / Position during the relax phase.
+	 *
+	 * @param pNode the node to which the force apply
+	 *
+	 * @Note Standard physics is "Position Variation = Speed x Duration" with a convention of "Duration=1" between to frames
+	 */
+	public void onRelaxPerson(PersonNode pNode) {
+		Vector2f forceBetweenPersons = new Vector2f();
+		Vector2f forceSummation      = new Vector2f();
 
-  /**
-   * Method that allows Physics Engine to modify Speed / Position during the relax phase.
-   *
-   * @param pNode the node to which the force apply
-   *
-   * @Note Standard physics is "Position Variation = Speed x Duration" with a convention of "Duration=1" between to frames
-   */
-  public void onRelaxPerson(PersonNode pNode) {
-    Vector2f forceBetweenPersons = new Vector2f();
-    Vector2f forceSummation      = new Vector2f();
+		// Calculation of repulsive force between persons
+		for (PersonNode p : code_swarm.getLivingPeople()) {
+			if (p != pNode) {
+				// elemental force calculation, and summation
+				forceBetweenPersons = calculateForceBetweenNodes(pNode, p);
+				forceSummation.add(forceBetweenPersons);
+			}
+		}
 
-    // Calculation of repulsive force between persons
-    for (PersonNode p : code_swarm.getLivingPeople()) {
-      if (p != pNode) {
-        // elemental force calculation, and summation
-        forceBetweenPersons = calculateForceBetweenNodes(pNode, p);
-        forceSummation.add(forceBetweenPersons);
-      }
-    }
+		// Apply repulsive force from other persons to this Node
+		applyForceTo(pNode, forceSummation);
+	}
 
-    // Apply repulsive force from other persons to this Node
-    applyForceTo(pNode, forceSummation);
-  }
+	/**
+	 * Method that allows Physics Engine to modify Speed / Position during the update phase.
+	 *
+	 * @param edge the node to which the force apply
+	 *
+	 * @Note Standard physics is "Position Variation = Speed x Duration" with a convention of "Duration=1" between to frames
+	 */
+	public void onUpdateEdge(Edge edge) {
+		edge.decay();
+	}
 
-  /**
-   * Method that allows Physics Engine to modify Speed / Position during the update phase.
-   *
-   * @param edge the node to which the force apply
-   *
-   * @Note Standard physics is "Position Variation = Speed x Duration" with a convention of "Duration=1" between to frames
-   */
-  public void onUpdateEdge(Edge edge) {
-    edge.decay();
-  }
+	/**
+	 * Method that allows Physics Engine to modify Speed / Position during the update phase.
+	 *
+	 * @param fNode the node to which the force apply
+	 *
+	 * @Note Standard physics is "Position Variation = Speed x Duration" with a convention of "Duration=1" between to frames
+	 */
+	public void onUpdateNode(FileNode fNode) {
+		// Apply Speed to Position on nodes
+		applySpeedTo(fNode);
 
-  /**
-   * Method that allows Physics Engine to modify Speed / Position during the update phase.
-   *
-   * @param fNode the node to which the force apply
-   *
-   * @Note Standard physics is "Position Variation = Speed x Duration" with a convention of "Duration=1" between to frames
-   */
-  public void onUpdateNode(FileNode fNode) {
-    // Apply Speed to Position on nodes
-    applySpeedTo(fNode);
+		// ensure coherent resulting position
+		fNode.getMPosition().set(constrain(fNode.getMPosition().x, 0.0f, (float)code_swarm.getCodeSwarmWidth()),constrain(fNode.getMPosition().y, 0.0f, (float)code_swarm.getCodeSwarmHeight()));
 
-    // ensure coherent resulting position
-    fNode.getMPosition().set(constrain(fNode.getMPosition().x, 0.0f, (float)code_swarm.getCodeSwarmWidth()),constrain(fNode.getMPosition().y, 0.0f, (float)code_swarm.getCodeSwarmHeight()));
+		// shortening life
+		fNode.decay();
+	}
 
-    // shortening life
-    fNode.decay();
-  }
+	private float constrain(float value, float min, float max) {
+		if (value < min) {
+			return min;
+		} else if (value > max) {
+			return max;
+		}
 
-  private float constrain(float value, float min, float max) {
-    if (value < min) {
-      return min;
-    } else if (value > max) {
-      return max;
-    }
+		return value;
+	}
 
-    return value;
-  }
+	/**
+	 * Method that allows Physics Engine to modify Speed / Position during the update phase.
+	 *
+	 * @param pNode the node to which the force apply
+	 *
+	 * @Note Standard physics is "Position Variation = Speed x Duration" with a convention of "Duration=1" between to frames
+	 */
+	public void onUpdatePerson(PersonNode pNode) {
+		// Apply Speed to Position on nodes
+		applySpeedTo(pNode);
 
-  /**
-   * Method that allows Physics Engine to modify Speed / Position during the update phase.
-   *
-   * @param pNode the node to which the force apply
-   *
-   * @Note Standard physics is "Position Variation = Speed x Duration" with a convention of "Duration=1" between to frames
-   */
-  public void onUpdatePerson(PersonNode pNode) {
-    // Apply Speed to Position on nodes
-    applySpeedTo(pNode);
+		// ensure coherent resulting position
+		pNode.getMPosition().set(constrain(pNode.getMPosition().x, 0.0f, (float)code_swarm.getCodeSwarmWidth()),constrain(pNode.getMPosition().y, 0.0f, (float)code_swarm.getCodeSwarmHeight()));
 
-    // ensure coherent resulting position
-    pNode.getMPosition().set(constrain(pNode.getMPosition().x, 0.0f, (float)code_swarm.getCodeSwarmWidth()),constrain(pNode.getMPosition().y, 0.0f, (float)code_swarm.getCodeSwarmHeight()));
+		// shortening life
+		pNode.decay();
+	}
 
-    // shortening life
-    pNode.decay();
-  }
+	/**
+	 *
+	 * @return Vector2f vector holding the starting location for a Person Node
+	 */
+	public Vector2f pStartLocation() {
+		Vector2f vec = new Vector2f(code_swarm.getCodeSwarmWidth()*(float)Math.random(), code_swarm.getCodeSwarmHeight()*(float)Math.random());
+		return vec;
+	}
 
-  /**
-   *
-   * @return Vector2f vector holding the starting location for a Person Node
-   */
-  public Vector2f pStartLocation() {
-    Vector2f vec = new Vector2f(code_swarm.getCodeSwarmWidth()*(float)Math.random(), code_swarm.getCodeSwarmHeight()*(float)Math.random());
-    return vec;
-  }
+	/**
+	 *
+	 * @return Vector2f vector holding the starting location for a File Node
+	 */
+	public Vector2f fStartLocation() {
+		Vector2f vec = new Vector2f(code_swarm.getCodeSwarmWidth()*(float)Math.random(), code_swarm.getCodeSwarmHeight()*(float)Math.random());
+		return vec;
+	}
 
-  /**
-   *
-   * @return Vector2f vector holding the starting location for a File Node
-   */
-  public Vector2f fStartLocation() {
-    Vector2f vec = new Vector2f(code_swarm.getCodeSwarmWidth()*(float)Math.random(), code_swarm.getCodeSwarmHeight()*(float)Math.random());
-    return vec;
-  }
+	/**
+	 *
+	 * @return Vector2f vector holding the starting velocity for a Person Node
+	 */
+	public Vector2f pStartVelocity(float mass) {
+		Vector2f vec = new Vector2f(mass*((float)Math.random()*2 - 1), mass*((float)Math.random()*2 -1));
+		return vec;
+	}
 
-  /**
-   *
-   * @return Vector2f vector holding the starting velocity for a Person Node
-   */
-  public Vector2f pStartVelocity(float mass) {
-    Vector2f vec = new Vector2f(mass*((float)Math.random()*2 - 1), mass*((float)Math.random()*2 -1));
-    return vec;
-  }
-
-  /**
-   *
-   * @return Vector2f vector holding the starting velocity for a File Node
-   */
-  public Vector2f fStartVelocity(float mass) {
-    Vector2f vec = new Vector2f(mass*((float)Math.random()*2 - 1), mass*((float)Math.random()*2 -1));
-    return vec;
-  }
+	/**
+	 *
+	 * @return Vector2f vector holding the starting velocity for a File Node
+	 */
+	public Vector2f fStartVelocity(float mass) {
+		Vector2f vec = new Vector2f(mass*((float)Math.random()*2 - 1), mass*((float)Math.random()*2 -1));
+		return vec;
+	}
 }
 

@@ -1,6 +1,9 @@
 package codeswarm.ui;
 
-/* This file is part of code_swarm.
+/*
+Copyright 2008-2009 code_swarm project team
+
+This file is part of code_swarm.
 
 code_swarm is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -45,6 +48,19 @@ import codeswarm.repository.svn.SVNHistory;
  * @author tpraxl
  */
 public class MainView extends javax.swing.JFrame {
+
+	private static final long serialVersionUID = 1L;
+	private String[] args;
+
+	private javax.swing.JButton clearCache;
+	private javax.swing.JButton goButton;
+	private javax.swing.JLabel jLabel1;
+	private javax.swing.JLabel jLabel2;
+	private javax.swing.JLabel jLabel3;
+	private javax.swing.JPasswordField password;
+	private javax.swing.JTextField repositoryURL;
+	private javax.swing.JTextField userName;
+	
 	// This class couples SVNHistory too tightly.
 	// TODO The concrete History-Implementation should be created by a Factory
 	// depending on the URL and/or other settings.
@@ -229,17 +245,5 @@ public class MainView extends javax.swing.JFrame {
 			}
 		});
 	}
-	private String[] args;
-
-	// Variables declaration - do not modify//GEN-BEGIN:variables
-	private javax.swing.JButton clearCache;
-	private javax.swing.JButton goButton;
-	private javax.swing.JLabel jLabel1;
-	private javax.swing.JLabel jLabel2;
-	private javax.swing.JLabel jLabel3;
-	private javax.swing.JPasswordField password;
-	private javax.swing.JTextField repositoryURL;
-	private javax.swing.JTextField userName;
-	// End of variables declaration//GEN-END:variables
 
 }

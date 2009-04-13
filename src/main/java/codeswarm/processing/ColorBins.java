@@ -1,7 +1,7 @@
-package codeswarm;
+package codeswarm.processing;
 
-/**
- * Copyright 2008 Michael Ogawa
+/*
+ * Copyright 2008-2009 code_swarm project team
  *
  * This file is part of code_swarm.
  *
@@ -24,29 +24,37 @@ import processing.core.PApplet;
 /**
  * @brief Definition of the colored histogram elements
  */
-class ColorBins
+public class ColorBins
 {
-  int [] colorList;
-  int num;
+	private int [] colorList;
+	private int num;
 
-  ColorBins()
-  {
-    colorList = new int[2];
-    num = 0;
-  }
+	public ColorBins()
+	{
+		colorList = new int[2];
+		num = 0;
+	}
 
-  public void add( int c )
-  {
-    if ( num >= colorList.length )
-      colorList = PApplet.expand( colorList );
+	public void add( int c )
+	{
+		if ( num >= colorList.length )
+			colorList = PApplet.expand( colorList );
 
-    colorList[num] = c;
-    num++;
-  }
+		colorList[num] = c;
+		num++;
+	}
 
-  public void sort()
-  {
-    colorList = PApplet.sort( colorList );
-  }
+	public void sort()
+	{
+		colorList = PApplet.sort( colorList );
+	}
+	
+	public int getNum(){
+		return num;
+	}
+	
+	public int[] getColorList(){
+		return colorList;
+	}
 }
 

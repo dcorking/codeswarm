@@ -1,7 +1,7 @@
 package codeswarm.physics;
 
-/**
- * Copyright 2008 code_swarm project team
+/*
+ * Copyright 2008-2009 code_swarm project team
  *
  * This file is part of code_swarm.
  *
@@ -23,11 +23,11 @@ import java.util.Properties;
 
 import javax.vecmath.Vector2f;
 
-import codeswarm.Edge;
-import codeswarm.FileNode;
-import codeswarm.Node;
-import codeswarm.PersonNode;
 import codeswarm.code_swarm;
+import codeswarm.processing.Edge;
+import codeswarm.processing.FileNode;
+import codeswarm.processing.Node;
+import codeswarm.processing.PersonNode;
 
 /**
  * @brief Physics Engine implementation.  In essence, people bounce around.  Nodes are attracted to the people.
@@ -39,13 +39,12 @@ public class PhysicsEngineChaotic extends PhysicsEngine
 {
 
 	private Properties cfg;
-
 	private float DRAG;
 
 	public PhysicsEngineChaotic(code_swarm drawable) {
 		super(drawable);
 	}
-	
+
 	/**
 	 * Method for initializing parameters.
 	 * @param p Properties from the config file.

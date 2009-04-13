@@ -1,6 +1,9 @@
 package codeswarm.repository.events;
 
-/* This file is part of code_swarm.
+/*
+Copyright 2008-2009 code_swarm project team
+
+This file is part of code_swarm.
 
 code_swarm is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -37,47 +40,50 @@ import org.w3c.dom.Element;
  * @author tpraxl
  */
 public class CodeSwarmEventsSerializer {
-    EventList list;
-    /**
-     * creates an instance of the serializer.
-     * @param list the EventList to serialize
-     */
-    public CodeSwarmEventsSerializer(EventList list){
-        this.list = list;
-    }
-    /**
-     * actually serializes the list to the file denoted by pathToFile
-     * @param pathToFile the path to the xml file to serialize to.
-     *          It gets created if it doesn't exist.
-     * @throws javax.xml.parsers.ParserConfigurationException
-     *          When the serialization failed
-     * @throws javax.xml.transform.TransformerConfigurationException
-     *          When the serialization failed
-     * @throws java.io.IOException
-     *          When the serialization failed
-     * @throws javax.xml.transform.TransformerException
-     *          When the serialization failed
-     */
-    public void serialize(String pathToFile) throws ParserConfigurationException, TransformerConfigurationException, IOException, TransformerException{
-        Document d = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
-        Element events = d.createElement("file_events");
-        for(Event e : list.getEvents()){
-            Element event = d.createElement("event");
-            event.setAttribute("filename", e.getFilename());
-            event.setAttribute("date", String.valueOf(e.getDate()));
-            event.setAttribute("author", e.getAuthor());
-            events.appendChild(event);
-        }
-        d.appendChild(events);
-        Transformer t = TransformerFactory.newInstance().newTransformer();
-        File f = new File(pathToFile);
-        if(!f.exists()){
-            f.createNewFile();
-        }
-        FileOutputStream out = new FileOutputStream(f);
-        StreamResult result = new StreamResult(out);
-        t.transform(new DOMSource(d), result);
-        out.close();
-    }
+	private EventList list;
+	
+	/**
+	 * creates an instance of the serializer.
+	 * @param list the EventList to serialize
+	 */
+	public CodeSwarmEventsSerializer(EventList list){
+		this.list = list;
+	}
+	
+	/**
+	 * actually serializes the list to the file denoted by pathToFile
+	 * @param pathToFile the path to the xml file to serialize to.
+	 *          It gets created if it doesn't exist.
+	 * @throws javax.xml.parsers.ParserConfigurationException
+	 *          When the serialization failed
+	 * @throws javax.xml.transform.TransformerConfigurationException
+	 *          When the serialization failed
+	 * @throws java.io.IOException
+	 *          When the serialization failed
+	 * @throws javax.xml.transform.TransformerException
+	 *          When the serialization failed
+	 */
+	public void serialize(String pathToFile) throws ParserConfigurationException, TransformerConfigurationException, IOException, TransformerException{
+		Document d = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+		Element events = d.createElement("file_events");
+		for(Event e : list.getEvents()){
+			Element event = d.createElement("event");
+			event.setAttribute("filename", e.getFilename());
+			event.setAttribute("date", String.valueOf(e.getDate()));
+			event.setAttribute("author", e.getAuthor());
+			events.appendChild(event);
+		}
+		d.appendChild(events);
+		Transformer t = TransformerFactory.newInstance().newTransformer();
+		File f = new File(pathToFile);
+		f.getParentFile().mkdirs();
+		if(!f.exists()){
+			f.createNewFile();
+		}
+		FileOutputStream out = new FileOutputStream(f);
+		StreamResult result = new StreamResult(out);
+		t.transform(new DOMSource(d), result);
+		out.close();
+	}
 
 }
