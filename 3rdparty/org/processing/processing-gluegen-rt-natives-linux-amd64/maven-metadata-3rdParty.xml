@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?><metadata>
+  <groupId>org.processing</groupId>
+  <artifactId>processing-gluegen-rt-natives-linux-amd64</artifactId>
+  <version>1.0.3</version>
+  <versioning>
+    <versions>
+      <version>1.0.3</version>
+    </versions>
+    <lastUpdated>20090413201649</lastUpdated>
+  </versioning>
+</metadata>

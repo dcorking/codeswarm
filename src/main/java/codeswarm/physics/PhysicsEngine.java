@@ -39,7 +39,6 @@ import codeswarm.processing.PersonNode;
 public abstract class PhysicsEngine
 {
 
-	private String name;
 	protected code_swarm drawableArea;
 
 	public PhysicsEngine(code_swarm drawable){
@@ -141,14 +140,6 @@ public abstract class PhysicsEngine
 	 * @return Vector2f vector holding the starting velocity for a File Node
 	 */
 	public abstract Vector2f fStartVelocity(float mass);
-
-	public void setName(String name){
-		this.name = name;
-	}
-
-	public String getName(){
-		return name;	
-	}
 
 }
 

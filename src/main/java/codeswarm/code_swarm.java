@@ -213,7 +213,6 @@ public class code_swarm extends PApplet implements TaskListener {
 				if ( ! ClassName.equals("__DEFAULT__")) {
 					PhysicsEngine pe = getPhysicsEngine(ClassName);
 					pe.setup(p);
-					pe.setName(ClassName);
 					mPhysicsEngineChoices.add(pe);
 				} else {
 					System.out.println("Skipping config file '" + ConfigPath + "'.  Must specify class name via the 'name' parameter.");
@@ -231,7 +230,7 @@ public class code_swarm extends PApplet implements TaskListener {
 		physicsEngineSelection = cfg.getStringProperty( CodeSwarmConfig.PHYSICS_ENGINE_SELECTION, PHYSICS_ENGINE_LEGACY );
 
 		for (PhysicsEngine p : mPhysicsEngineChoices) {
-			if (physicsEngineSelection.equals(p.getName())) {
+			if (physicsEngineSelection.equals(p.getClass().getName())) {
 				mPhysicsEngine = p;
 			}
 		}
@@ -942,18 +941,18 @@ public class code_swarm extends PApplet implements TaskListener {
 					if (direction == true) {
 						if ((i+1) < mPhysicsEngineChoices.size()) {
 							mPhysicsEngine=mPhysicsEngineChoices.get(i+1);
-							physicsEngineSelection=mPhysicsEngineChoices.get(i+1).getName();
+							physicsEngineSelection=mPhysicsEngineChoices.get(i+1).getClass().getName();
 						} else {
 							mPhysicsEngine=mPhysicsEngineChoices.get(0);
-							physicsEngineSelection=mPhysicsEngineChoices.get(0).getName();
+							physicsEngineSelection=mPhysicsEngineChoices.get(0).getClass().getName();
 						}
 					} else {
 						if ((i-1) >= 0) {
 							mPhysicsEngine=mPhysicsEngineChoices.get(i-1);
-							physicsEngineSelection=mPhysicsEngineChoices.get(i-1).getName();
+							physicsEngineSelection=mPhysicsEngineChoices.get(i-1).getClass().getName();
 						} else {
 							mPhysicsEngine=mPhysicsEngineChoices.get(mPhysicsEngineChoices.size()-1);
-							physicsEngineSelection=mPhysicsEngineChoices.get(mPhysicsEngineChoices.size()-1).getName();
+							physicsEngineSelection=mPhysicsEngineChoices.get(mPhysicsEngineChoices.size()-1).getClass().getName();
 						}
 					}
 				}
