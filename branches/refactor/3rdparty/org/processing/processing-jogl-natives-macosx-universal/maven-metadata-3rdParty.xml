@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?><metadata>
+  <groupId>org.processing</groupId>
+  <artifactId>processing-jogl-natives-macosx-universal</artifactId>
+  <version>1.0.3</version>
+  <versioning>
+    <versions>
+      <version>1.0.3</version>
+    </versions>
+    <lastUpdated>20090413202152</lastUpdated>
+  </versioning>
+</metadata>

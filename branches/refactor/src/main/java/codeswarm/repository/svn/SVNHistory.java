@@ -25,8 +25,6 @@ along with code_swarm.  If not, see <http://www.gnu.org/licenses/>.
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
@@ -34,6 +32,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNLogEntry;
 import org.tmatesoft.svn.core.SVNLogEntryPath;
@@ -47,7 +47,7 @@ import codeswarm.repository.events.EventList;
  * @author tpraxl
  */
 public class SVNHistory extends AbstractSVNHistoryVisitor {
-	private static final Logger LOGGER = Logger.getLogger(SVNHistory.class.getName());
+	private static Log logger = LogFactory.getLog(SVNHistory.class);
 	private	String filename;
 	private String url;
 	private EventList list = new EventList();
@@ -74,7 +74,7 @@ public class SVNHistory extends AbstractSVNHistoryVisitor {
 		try {
 			Preferences.userNodeForPackage(SVNHistory.class).clear();
 		} catch (BackingStoreException ex) {
-			Logger.getLogger(SVNHistory.class.getName()).log(Level.SEVERE, null, ex);
+			logger.error(null, ex);
 		}
 	}
 	
@@ -98,18 +98,24 @@ public class SVNHistory extends AbstractSVNHistoryVisitor {
 		Preferences p = Preferences.userNodeForPackage(SVNHistory.class);
 		long l= p.getLong(Integer.toString(this.url.hashCode()), -1l);
 		if(l==revision){
-			LOGGER.log(Level.FINE,"skip fetching {0} (latest revision is {1}) for {2}",new Object[]{String.valueOf(l),revision,this.url});
+			if(logger.isDebugEnabled()){
+				logger.debug("skip fetching " + String.valueOf(l) + " (latest revision is " + revision + ") for " + this.url);
+			}
 			return false;
 		}else{
-			LOGGER.log(Level.FINE, "proceed fetching (latest revision is {0} , cached revision is {1} for repository {2}", new Object[]{String.valueOf(pRevision), String.valueOf(l), this.url});
+			if(logger.isDebugEnabled()){
+				logger.debug("proceed fetching (latest revision is " + String.valueOf(pRevision) + " , cached revision is " + String.valueOf(l) + " for repository " + this.url);
+			}
 			Preferences.userNodeForPackage(SVNHistory.class).putLong(Integer.toString(this.url.hashCode()), revision);
 			try {
 				Preferences.userNodeForPackage(SVNHistory.class).flush();
 			} catch (BackingStoreException ex) {
-				LOGGER.log(Level.SEVERE, null, ex);
+				logger.error(null, ex);
 			}
 		}
-		LOGGER.log(Level.FINE,"fetching until revision {0}",new Object[]{revision});
+		if(logger.isDebugEnabled()){
+			logger.debug("fetching until revision " + revision);
+		}
 		return true;
 	}
 	
@@ -124,8 +130,8 @@ public class SVNHistory extends AbstractSVNHistoryVisitor {
 			String key = (String)i.next();
 			SVNLogEntryPath entryPath = (SVNLogEntryPath) logEntry.getChangedPaths().get(key);
 			list.addEvent(new Event(entryPath.getPath(),logEntry.getDate().getTime(),logEntry.getAuthor()));
-			if(LOGGER.isLoggable(Level.FINE)){
-				LOGGER.log(Level.FINE, "fetched entry {0}\n date {1}\n rev. {2}\n--", new Object[]{entryPath.getPath(),logEntry.getDate(), logEntry.getRevision()});
+			if(logger.isDebugEnabled()){
+				logger.debug("fetched entry " + entryPath.getPath() + "\n date " + logEntry.getDate() + "\n rev. " + logEntry.getRevision() + "\n--");
 			}
 		}
 		/*
@@ -155,14 +161,13 @@ public class SVNHistory extends AbstractSVNHistoryVisitor {
 				 * SVNLogEntryPath.getCopyRevision tells where it was copied
 				 * from and what revision the origin path was at.
 				 */
-				if(LOGGER.isLoggable(Level.FINE)){
+				if(logger.isDebugEnabled()){
 					StringBuffer copyPathInfo = new StringBuffer();
 					if(entryPath.getCopyPath()!=null){
 						copyPathInfo.append("(from ").append(entryPath.getCopyPath());
 						copyPathInfo.append(" rev ").append(entryPath.getCopyRevision()).append(")");
 					}
-					LOGGER.log(Level.FINE,"entry: {0} {1} {2}",
-							new Object[]{entryPath.getType(),entryPath.getPath(),copyPathInfo.toString()});
+					logger.debug("entry: " + entryPath.getType() + " " + entryPath.getPath() + " " + copyPathInfo.toString());
 				}
 			}
 		}
@@ -177,13 +182,13 @@ public class SVNHistory extends AbstractSVNHistoryVisitor {
 				new CodeSwarmEventsSerializer(list);
 			serializer.serialize(getFilePath());
 		} catch (ParserConfigurationException ex) {
-			LOGGER.log(Level.SEVERE, null, ex);
+			logger.error(null, ex);
 		} catch (TransformerConfigurationException ex) {
-			LOGGER.log(Level.SEVERE, null, ex);
+			logger.error(null, ex);
 		} catch (IOException ex) {
-			LOGGER.log(Level.SEVERE, null, ex);
+			logger.error(null, ex);
 		} catch (TransformerException ex) {
-			LOGGER.log(Level.SEVERE, null, ex);
+			logger.error(null, ex);
 		}
 	}
 	
@@ -197,7 +202,7 @@ public class SVNHistory extends AbstractSVNHistoryVisitor {
 		/*
 		 * Perhaps a malformed URL is the cause of this exception.
 		 */
-		LOGGER.log(Level.SEVERE,"error while creating an SVNRepository for the location {0} : {1}", new Object[]{url, e.getMessage()});
+		logger.error("error while creating an SVNRepository for the location " + url + " : " + e.getMessage(), e);
 		return false;
 	}
 	
@@ -207,8 +212,8 @@ public class SVNHistory extends AbstractSVNHistoryVisitor {
 	 * @param e the orginal exception
 	 * @return null.
 	 */
-	public Long handleFetchingLatestRepositoryRevisionException(SVNException svne) {
-		LOGGER.log(Level.FINE,"error while fetching the latest repository revision: {0}.\nFalling back to cached version (if present).",new Object[]{ svne.getMessage()});
+	public Long handleFetchingLatestRepositoryRevisionException(SVNException e) {
+		logger.error("error while fetching the latest repository revision: " + e.getMessage() + ".\nFalling back to cached version (if present).", e);
 		return null;
 	}
 	
@@ -218,8 +223,8 @@ public class SVNHistory extends AbstractSVNHistoryVisitor {
 	 * @param url the repository url
 	 * @return false
 	 */
-	public boolean handleCollectingLogInformationException(SVNException svne, String url) {
-		LOGGER.log(Level.SEVERE,"error while collecting log information for {0} : {1}", new Object[]{url,svne.getMessage()});
+	public boolean handleCollectingLogInformationException(SVNException e, String url) {
+		logger.error("error while collecting log information for " + url + " : " + e.getMessage(), e);
 		return false;
 	}
 	

@@ -230,17 +230,7 @@ public class MainView extends javax.swing.JFrame {
 				}catch(UnsupportedLookAndFeelException e){
 					// not that fatal. No need to log.
 				}
-				try {
-					File f = new File("data/log.properties");
-					InputStream in = new FileInputStream(f);
-					LogManager.getLogManager().readConfiguration(in);
-					in.close();
-				} catch (IOException ex) {
-					// no problem. Standard-logging is performed (Console)
-					Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
-				} catch (SecurityException ex) {
-					Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
-				}
+
 				new MainView(args).setVisible(true);
 			}
 		});
