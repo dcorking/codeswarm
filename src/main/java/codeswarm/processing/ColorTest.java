@@ -23,11 +23,17 @@ import java.awt.Color;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import processing.core.PApplet;
 import processing.core.PConstants;
 
 public class ColorTest
 {
+	
+	private static Log logger = LogFactory.getLog(ColorTest.class);
+	
 	private Pattern expr;
 	private String label;
 	private int c1, c2;
@@ -103,11 +109,11 @@ public class ColorTest
 	public static void main( String [] args )
 	{
 		ColorTest ct = new ColorTest();
-		System.out.println( "input=" + args[0] );
+		logger.debug( "input=" + args[0] );
 		ct.loadProperty( args[0] );
-		//System.out.println( "regex=" + ct.expr );
-		System.out.println( "color1=" + Integer.toHexString(ct.c1) );
-		System.out.println( "color2=" + Integer.toHexString(ct.c2) );
+		//logger.debug( "regex=" + ct.expr );
+		logger.debug( "color1=" + Integer.toHexString(ct.c1) );
+		logger.debug( "color2=" + Integer.toHexString(ct.c2) );
 	}
 }
 

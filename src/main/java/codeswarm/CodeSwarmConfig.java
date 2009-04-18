@@ -25,6 +25,9 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Properties;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import codeswarm.repository.events.EventList;
 
 /**
@@ -32,7 +35,10 @@ import codeswarm.repository.events.EventList;
  */
 public class CodeSwarmConfig
 {
-	/** Indexes into the Properties Object */
+	
+	private static Log logger = LogFactory.getLog(CodeSwarmConfig.class);
+	
+	/* Indexes into the Properties Object */
 	/** The width of window */
 	public static final String WIDTH_KEY = "Width";
 	/** The height of window */
@@ -314,7 +320,7 @@ public class CodeSwarmConfig
 				{
 					String key = (String)en.nextElement();
 					String value = config.p.getProperty( key );
-					System.out.println( key + "=" + value );
+					logger.debug( key + "=" + value );
 				}
 			}
 			catch (IOException e)

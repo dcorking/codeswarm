@@ -22,6 +22,8 @@ along with code_swarm.  If not, see <http://www.gnu.org/licenses/>.
 import java.util.Iterator;
 import java.util.concurrent.BlockingQueue;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -31,6 +33,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 import codeswarm.processing.FileEvent;
 
 public class XMLQueueLoader implements Runnable {
+	private static Log logger = LogFactory.getLog(XMLQueueLoader.class);
 	private final String fullFilename;
 	private BlockingQueue<FileEvent> queue;
 	private boolean isXMLSorted;
@@ -72,8 +75,7 @@ public class XMLQueueLoader implements Runnable {
 		try {
 			reader = XMLReaderFactory.createXMLReader();
 		} catch (SAXException e) {
-			System.out.println("Couldn't find/create an XML SAX Reader");
-			e.printStackTrace();
+			logger.error("Couldn't find/create an XML SAX Reader", e);
 			System.exit(1);
 		}
 
@@ -94,7 +96,7 @@ public class XMLQueueLoader implements Runnable {
 					//so we should crash in this case
 					if (isXMLSorted){
 						if (eventDate < maximumDateSeenSoFar){
-							System.out.println("Input not sorted, you must set IsInputSorted to false in your config file");
+							logger.error("Input not sorted, you must set IsInputSorted to false in your config file");
 							System.exit(1);
 						}
 						else
@@ -111,8 +113,7 @@ public class XMLQueueLoader implements Runnable {
 						fireEventAddedEvent();
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
-						System.out.println("Interrupted while trying to put into eventsQueue");
-						e.printStackTrace();
+						logger.error("Interrupted while trying to put into eventsQueue", e);
 						System.exit(1);
 					}
 				}
@@ -133,9 +134,7 @@ public class XMLQueueLoader implements Runnable {
 		try {
 			reader.parse(fullFilename);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			System.out.println("Error parsing xml:");
-			e.printStackTrace();
+			logger.error("Error parsing xml:", e);
 			System.exit(1);
 		}
 	}
