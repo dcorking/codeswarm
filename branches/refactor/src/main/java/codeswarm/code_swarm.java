@@ -220,14 +220,14 @@ public class code_swarm extends PApplet implements TaskListener {
 					pe.setup(p);
 					mPhysicsEngineChoices.add(pe);
 				} else {
-					System.out.println("Skipping config file '" + ConfigPath + "'.  Must specify class name via the 'name' parameter.");
+					logger.error("Skipping config file '" + ConfigPath + "'.  Must specify class name via the 'name' parameter.");
 					System.exit(1);
 				}
 			}
 		}
 
 		if (mPhysicsEngineChoices.size() == 0) {
-			System.out.println("No physics engine config files found in '" + physicsEngineConfigDir + "'.");
+			logger.error("No physics engine config files found in '" + physicsEngineConfigDir + "'.");
 			System.exit(1);
 		}
 
@@ -241,7 +241,7 @@ public class code_swarm extends PApplet implements TaskListener {
 		}
 
 		if (mPhysicsEngine == null) {
-			System.out.println("No physics engine matches your choice of '" + physicsEngineSelection + "'. Check '" + physicsEngineConfigDir + "' for options.");
+			logger.error("No physics engine matches your choice of '" + physicsEngineSelection + "'. Check '" + physicsEngineConfigDir + "' for options.");
 			System.exit(1);
 		}
 
@@ -671,8 +671,7 @@ public class code_swarm extends PApplet implements TaskListener {
 				try {
 					currentEvent = eventsQueue.take();
 				} catch (InterruptedException e) {
-					System.out.println("Interrupted while fetching current event from eventsQueue");
-					e.printStackTrace();
+					logger.warn("Interrupted while fetching current event from eventsQueue", e);
 					continue;
 				}
 			}
@@ -1061,10 +1060,10 @@ public class code_swarm extends PApplet implements TaskListener {
 				System.out.flush();
 				start(new CodeSwarmConfig(args[0]));
 			} else {
-				System.err.println("Specify a config file.");
+				logger.error("Specify a config file.");
 			}
 		} catch (IOException e) {
-			System.err.println("Failed due to exception: " + e.getMessage());
+			logger.error("Failed due to exception: " + e.getMessage(), e);
 		}
 	}
 	/**

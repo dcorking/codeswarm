@@ -6,18 +6,15 @@
 	<packaging>jar</packaging>
 	<version>1.0.0</version>
 	<name>code_swarm</name>
-	<description>This visualisation, called code_swarm, shows the
-		history of commits in a software project. A commit happens when a
-		developer makes changes to the code or documents and transfers them
-		into the central project repository. Both developers and files are
-		represented as moving elements. When a developer commits a file, it
-		lights up and flies towards that developer. Files are colored
-		according to their purpose, such as whether they are source code or a
-		document. If files or developers have not been active for a while,
-		they will fade away. A histogram at the bottom keeps a reminder of
-		what has come before.</description>
+	<description>This visualisation, called code_swarm, shows the history of commits in a software project. A commit happens when a developer makes changes to the code or documents and transfers them into the central project repository. Both developers and files are represented as moving elements. When a developer commits a file, it	lights up and flies towards that developer. Files are colored	according to their purpose, such as whether they are source code or a document. If files or developers have not been active for a while, they will fade away. A histogram at the bottom keeps a reminder of what has come before.</description>
 	<url>http://vis.cs.ucdavis.edu/~ogawa/codeswarm</url>
 	<inceptionYear>2008</inceptionYear>
+	<licenses>
+		<license>
+			<name>GNU GENERAL PUBLIC LICENSE V3</name>
+			<url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
+		</license>
+	</licenses>
 	<repositories>
 		<repository>
 			<id>3rdparty</id>
@@ -165,6 +162,11 @@
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>
+	<scm>
+		<connection>scm:svn:http://codeswarm.googlecode.com/svn/branches/refactor</connection>
+		<developerConnection>scm:svn:https://codeswarm.googlecode.com/svn/branches/refactor</developerConnection>
+		<url>http://code.google.com/p/codeswarm/source/browse</url>
+	</scm>
 	<build>
 		<resources>
 			<resource>
