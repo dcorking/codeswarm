@@ -59,6 +59,13 @@ public class XMLQueueLoader implements Runnable {
 			it.next().fireTaskDoneEvent();
 		}
 	}
+	
+	private void fireEventAddedEvent(){
+		Iterator<TaskListener> it = listenerList.iterator();
+		while(it.hasNext()){
+			it.next().fireEventAddedEvent();
+		}
+	}
 
 	public void run(){
 		XMLReader reader = null;
@@ -101,6 +108,7 @@ public class XMLQueueLoader implements Runnable {
 					FileEvent evt = new FileEvent(eventDate, eventAuthor, "", eventFilename, eventWeight);
 					try {
 						queue.put(evt);
+						fireEventAddedEvent();
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						System.out.println("Interrupted while trying to put into eventsQueue");
@@ -110,6 +118,12 @@ public class XMLQueueLoader implements Runnable {
 				}
 			}
 
+			/*
+			 * (non-Javadoc)
+			 * @see org.xml.sax.helpers.DefaultHandler#endDocument()
+			 * 
+			 * Notify any listeners that the Document has finished parsing.
+			 */
 			public void endDocument(){
 				fireTaskDoneEvent();
 			}

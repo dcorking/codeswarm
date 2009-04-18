@@ -38,6 +38,9 @@ import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import processing.core.PApplet;
 import processing.core.PFont;
 import processing.core.PImage;
@@ -57,6 +60,8 @@ public class code_swarm extends PApplet implements TaskListener {
 
 	/** @remark needed for any serializable class */
 	private static final long serialVersionUID = 0;
+	
+	private static Log logger = LogFactory.getLog(code_swarm.class);
 
 	// User-defined variables
 	private int FRAME_RATE = 24;
@@ -261,7 +266,15 @@ public class code_swarm extends PApplet implements TaskListener {
 		initColors();
 
 		loadRepEvents(cfg.getStringProperty(CodeSwarmConfig.INPUT_FILE_KEY)); // event formatted (this is the standard)
-		while (!finishedLoading && eventsQueue.isEmpty());
+		synchronized (this){
+			while (!finishedLoading && eventsQueue.isEmpty()){
+				try{
+					wait();
+				}catch (InterruptedException e) {
+					logger.error("The ready-check thread was interrupted", e);
+				}
+			}
+		}
 		prevDate = eventsQueue.peek().getDate();
 
 		SCREENSHOT_FILE = cfg.getStringProperty(CodeSwarmConfig.SNAPSHOT_LOCATION_KEY);
@@ -710,7 +723,15 @@ public class code_swarm extends PApplet implements TaskListener {
 			if (finishedLoading)
 				currentEvent = eventsQueue.peek();
 			else {
-				while (eventsQueue.isEmpty());
+				synchronized (this){
+					while (eventsQueue.isEmpty()){
+						try{
+							wait();
+						}catch(InterruptedException e){
+							logger.error("The queue-check thread was interrupted", e);
+						}
+					}
+				}
 				currentEvent = eventsQueue.peek();
 			}
 		}
@@ -1038,8 +1059,7 @@ public class code_swarm extends PApplet implements TaskListener {
 				System.out.println("the Free Software Foundation, either version 3 of the License, or");
 				System.out.println("(at your option) any later version.");
 				System.out.flush();
-				cfg = new CodeSwarmConfig(args[0]);
-				PApplet.main(new String[] { "code_swarm" });
+				start(new CodeSwarmConfig(args[0]));
 			} else {
 				System.err.println("Specify a config file.");
 			}
@@ -1059,9 +1079,31 @@ public class code_swarm extends PApplet implements TaskListener {
 		PApplet.main(new String[]{"codeswarm.code_swarm"});
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see codeswarm.TaskListener#fireTaskDoneEvent()
+	 * 
+	 * Notify waiting Threads to wake since the loading of the Document is complete.
+	 */
 	@Override
 	public void fireTaskDoneEvent() {
-		finishedLoading = true;
+		synchronized (this){
+			finishedLoading = true;
+			notifyAll();
+		}
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see codeswarm.TaskListener#fireEventAddedEvent()
+	 * 
+	 * Notify waiting Threads to wake since an Event has been added to the queue.
+	 */
+	@Override
+	public void fireEventAddedEvent() {
+		synchronized (this){
+			notifyAll();
+		}
 	}
 
 	public static PFont getBoldPFont(){
