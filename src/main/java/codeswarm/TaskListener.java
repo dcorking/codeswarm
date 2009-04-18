@@ -23,4 +23,6 @@ public interface TaskListener {
 
 	public void fireTaskDoneEvent();
 	
+	public void fireEventAddedEvent();
+	
 }

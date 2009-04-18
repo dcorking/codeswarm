@@ -31,7 +31,7 @@ public class PersonNode extends Node {
 	private int flavor;
 	private int colorCount = 1;
 	private int minBold;
-	private int touches;
+//	private int touches; //unused
 	private static int PERSON_LIFE_INIT = 255;
 	private static int PERSON_LIFE_DECREMENT = -1;
 	private static float DEFAULT_PERSON_SPEED = 2.0f;
@@ -61,7 +61,7 @@ public class PersonNode extends Node {
 		maxSpeed = DEFAULT_PERSON_SPEED;
 		name = n;
 		minBold = (int)(PERSON_LIFE_INIT * (1 - ((float) HIGHLIGHT_PCT)/100));
-		touches = 1;
+//		touches = 1; //unused
 		mass = personMass;
 		mPosition.set(startLocation);
 		mSpeed.set(startVelocity);
@@ -87,7 +87,7 @@ public class PersonNode extends Node {
 
 	public void freshen () {
 		life = PERSON_LIFE_INIT;
-		touches++;
+//		touches++; //unused
 	}
 
 	public void addColor(int c) {

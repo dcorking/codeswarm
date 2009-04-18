@@ -45,7 +45,7 @@ public class PhysicsEngineMaxwellsDemon extends PhysicsEngine
 	private int midWayX;
 	private int midWayY;
 	private int startDoorY;
-	private Vector2f doorCenter;
+//	private Vector2f doorCenter; //not used
 	private int doorWayLeft;
 	private int doorWayRight;
 
@@ -66,7 +66,7 @@ public class PhysicsEngineMaxwellsDemon extends PhysicsEngine
 		midWayX = code_swarm.getCodeSwarmWidth() / 2;
 		midWayY = code_swarm.getCodeSwarmHeight() / 2;
 		startDoorY = midWayY - doorSize;
-		doorCenter = new Vector2f(midWayX, midWayY);
+//		doorCenter = new Vector2f(midWayX, midWayY); //not used
 		doorWayLeft = Integer.parseInt(cfg.getProperty("doorWayLeft","35"));
 		doorWayRight = Integer.parseInt(cfg.getProperty("doorWayRight","50"));
 	}
@@ -309,10 +309,8 @@ public class PhysicsEngineMaxwellsDemon extends PhysicsEngine
 	}
 
 	private boolean nearDoor(Node node) {
-		if (node.getMPosition().x > (midWayX - doorWayLeft) && node.getMPosition().x < (midWayX + doorWayRight)) {
-			if (node.getMPosition().y >= startDoorY && node.getMPosition().y <= midWayY) {
-				return true;
-			}
+		if (node.getMPosition().x > (midWayX - doorWayLeft) && node.getMPosition().x < (midWayX + doorWayRight) && node.getMPosition().y >= startDoorY && node.getMPosition().y <= midWayY) {
+			return true;
 		}
 		return false;
 	}

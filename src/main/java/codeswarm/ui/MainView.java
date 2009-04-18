@@ -20,17 +20,13 @@ along with code_swarm.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 import java.awt.Toolkit;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.logging.Level;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import codeswarm.CodeSwarmConfig;
 import codeswarm.code_swarm;
@@ -50,6 +46,7 @@ import codeswarm.repository.svn.SVNHistory;
 public class MainView extends javax.swing.JFrame {
 
 	private static final long serialVersionUID = 1L;
+	private static Log logger = LogFactory.getLog(MainView.class);
 	private String[] args;
 
 	private javax.swing.JButton clearCache;
@@ -106,14 +103,14 @@ public class MainView extends javax.swing.JFrame {
 		goButton.setText("GO");
 		goButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				goButtonActionPerformed(evt);
+				goButtonActionPerformed(/*evt*/); //removed unused 'evt' argument
 			}
 		});
 
 		clearCache.setText("Clear Cache");
 		clearCache.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				clearCacheActionPerformed(evt);
+				clearCacheActionPerformed(/*evt*/); //removed unused 'evt' argument
 			}
 		});
 
@@ -172,7 +169,7 @@ public class MainView extends javax.swing.JFrame {
 	 * entries.
 	 * @param evt The ActionEvent from Swing
 	 */
-	private void goButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_goButtonActionPerformed
+	private void goButtonActionPerformed(/*java.awt.event.ActionEvent evt*/) {//GEN-FIRST:event_goButtonActionPerformed
 		Runnable run = new Runnable() {
 			public void run() {
 				goButton.setEnabled(false);
@@ -205,7 +202,7 @@ public class MainView extends javax.swing.JFrame {
 	 * version cache.
 	 * @param evt the Swing ActionEvent.
 	 */
-	private void clearCacheActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearCacheActionPerformed
+	private void clearCacheActionPerformed(/*java.awt.event.ActionEvent evt*/) {//GEN-FIRST:event_clearCacheActionPerformed
 		SVNHistory.clearCache();
 	}//GEN-LAST:event_clearCacheActionPerformed
 
@@ -221,14 +218,8 @@ public class MainView extends javax.swing.JFrame {
 				Toolkit.getDefaultToolkit().setDynamicLayout(true);
 				try{
 					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-				}catch(ClassNotFoundException e){
-					// not that fatal. No need to log.
-				}catch(InstantiationException e){
-					// not that fatal. No need to log.
-				}catch(IllegalAccessException e){
-					// not that fatal. No need to log.
-				}catch(UnsupportedLookAndFeelException e){
-					// not that fatal. No need to log.
+				}catch(Exception e){
+					logger.warn("Trouble loading system look and feel. No biggie...", e);
 				}
 
 				new MainView(args).setVisible(true);

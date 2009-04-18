@@ -194,6 +194,9 @@
 						</goals>
 						<configuration>
 							<tasks>
+								<copy todir="${project.build.directory}/dist/convert">
+								  	<fileset dir="src/main/python/codeswarm" />
+								</copy>
 								<copy todir="${project.build.directory}/dist/physics">
 								  	<fileset dir="src/main/resources/physics" />
 								</copy>
@@ -315,7 +318,7 @@
 	</reporting>
 	<issueManagement>
 		<system>Google Code</system>
-		<url>http://code.google.com/p/codeswarm/issue/list</url>
+		<url>http://code.google.com/p/codeswarm/issues/list</url>
 	</issueManagement>
 	<developers>
 		<developer>

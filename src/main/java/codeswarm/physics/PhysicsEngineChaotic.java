@@ -104,7 +104,7 @@ public class PhysicsEngineChaotic extends PhysicsEngine
 		return force;
 	}
 
-	private void checkCollisionNew(Node nodeA, Node nodeB, float maxD)
+	private void checkCollisionNew(Node nodeA, Node nodeB/*, float maxD*/) //removed maxD argument since it is not used
 	{
 		Vector2f tmp = new Vector2f();
 		tmp.sub(nodeA.getMPosition(), nodeB.getMPosition());
@@ -134,6 +134,8 @@ public class PhysicsEngineChaotic extends PhysicsEngine
 		}
 	}
 
+	// unused method but keeping are for legacy sake
+	/* 
 	private void checkCollision(Node nodeA, Node nodeB, float maxD)
 	{
 		Vector2f dVec = new Vector2f();
@@ -170,6 +172,7 @@ public class PhysicsEngineChaotic extends PhysicsEngine
 			nodeB.getMPosition().y += nodeB.getMSpeed().y * dt;
 		}
 	}
+	*/
 
 
 	/**
@@ -180,7 +183,7 @@ public class PhysicsEngineChaotic extends PhysicsEngine
 	 */
 	private void calculateForceBetweenfNodes(FileNode nodeA, FileNode nodeB )
 	{
-		checkCollisionNew(nodeA, nodeB, 5);
+		checkCollisionNew(nodeA, nodeB/*, 5*/); //removed maxD argument since it is not used in checkCollisionNew
 	}
 
 	/**
@@ -191,7 +194,7 @@ public class PhysicsEngineChaotic extends PhysicsEngine
 	 */
 	private void calculateForceBetweenpNodes(PersonNode nodeA, PersonNode nodeB )
 	{
-		checkCollisionNew(nodeA, nodeB, 50);
+		checkCollisionNew(nodeA, nodeB/*, 50*/); //removed maxD argument since it is not used in checkCollisionNew
 	}
 
 
