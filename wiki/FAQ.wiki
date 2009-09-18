@@ -1,6 +1,10 @@
 #summary Frequently Asked Questions
 #labels Featured
 
+* How do I make a video ?*
+
+Read more about this in the separate page [GeneratingAVideo] .
+
 *Do I need the Processing IDE?*
 
  You don't. To run the trunk version of code_swarm you only need java and ant.
