@@ -4,12 +4,14 @@
 
 There are several ways to generate a video: 
 
- * if you want to access a subversion repository, simply run *`runrepositoryfetch.bat`* on windows systems or *`runrepository.sh`* on linux (linux support for this way has not been tested yet). 
+ * if you want to access a subversion repository, simply run *`runrepositoryfetch.bat`* on windows systems or *`runrepository.sh`* on linux (linux support for this way has not been tested yet).
 A dialog will show up, asking you for the repository url, your username and password. 
 The repository gets fetched, converted and codeswarm will be started. This will create the frames of the video for you. If you want to create a real video, see "*Creating the video*" (below).
  * if you want to access a non-svn repository, read on:
 
 This guide explains how to generate a video under a Linux install (it is based on Linux tools) but might be applied to a Windows or OSX workstation as well (some other tools might need to be used)
+
+The prerequisite, of course, is to download code_swarm from SVN (check out the [http://code.google.com/p/codeswarm/source/checkout Source Checkout] page for that). You will also need `java` and `ant` to build it.
 
 Generating your video is done in 4 steps :
 
@@ -18,12 +20,36 @@ Generating your video is done in 4 steps :
  # executing code_swarm
  # making a video out of the exported images
 
-The first step, of course, is to download code_swarm from SVN (check out the [http://code.google.com/p/codeswarm/source/checkout Source Checkout] page for that). You will also need java and ant to build it.
 
+<table border='1'>
+<tr>
+<td colspan=3>
 = Step 1: Getting the activity log =
+</td>
+</tr>
 
+<tr>
+<td>
 == SVN ==
+</td>
+<td>
+== CVS ==
+</td>
+<td>
+== darcs ==
+</td>
+<td>
+== Mercurial ==
+</td>
 
+<td>
+== MediaWiki ==
+</td>
+
+</tr>
+
+<tr>
+<td valign='top'>
 To get the activity log from your SVN repository, just get a local copy of your repository, enter the main directory and execute
 {{{
   svn log -v > activity.log
@@ -31,8 +57,9 @@ To get the activity log from your SVN repository, just get a local copy of your 
 
 This will create a file called *activity.log*.
 
-== CVS ==
+</td>
 
+<td valign='top'>
 To get the activity log from your CVS repository, just get a local copy of your repository, enter the main directory and execute
 {{{
   cvs log > activity.log
@@ -40,51 +67,91 @@ To get the activity log from your CVS repository, just get a local copy of your 
 
 This will create a file called *activity.log*.
 
-== MediaWiki (Using SwarmExport extension) ==
+</td>
 
-To get a wikiswarm report from the wiki use the maintenance script inside of the SwarmExport extension: [http://svn.nadir-point.com/viewvc/mediawiki-extensions/branches/stable/SwarmExport/]
-
-== darcs ==
-
+<td valign='top'>
 {{{
   darcs changes --summary --reverse > activity.log
 }}}
 
-== Mercurial ==
+</td>
+
+<td valign='top'>
 
 Nothing to do here, read next step.
 
-== Other versioning systems ==
+</td>
 
-Documentation to come
+<td valign='top'>
+To get a wikiswarm report from the wiki use the maintenance script inside of the  [http://svn.nadir-point.com/viewvc/mediawiki-extensions/branches/stable/SwarmExport/ SwarmExport extension]
+</td>
 
+</tr>
+
+<tr>
+<td colspan='3'>
 = Step 2: Convert the log =
+code_swarm has a python converter in its `convert_logs` directory. For a list of all the  supported systems, use: `python convert_logs.py --help` .
 
-code_swarm has a python converter in its convert_logs directory.
-Before you start using it, make sure you read this issue report: [http://code.google.com/p/codeswarm/issues/detail?id=6]
+*Note*: Before you start using it, you might want to read [http://code.google.com/p/codeswarm/issues/detail?id=6 this issue report].
 
+</td>
+</tr>
+
+<tr>
+<td colspan='3'>
  # Move to the convert_logs directory
  # Copy the activity.log file generated above into the current directory
  # Launch the convert_logs.py script:
-  * For SVN use: python convert_logs.py -s activity.log -o activity.xml
-  * For CVS use: python convert_logs.py -c activity.log -o activity.xml
-  * For MediaWiki using SwarmExport use: python convert_logs.py --wikiswarm-log=activity.log -o activity.xml
-  * For a list of other available systems, use: python convert_logs.py --help
-
-This will generate a file called activity.xml. 
-
-At this point, you will not need activity.log anymore, so you can delete it.
-
-== Mercurial specific ==
-
-Assuming codeswarm is located in `$CODESWARM_HOME`, we have a python script in `convert_logs` that may be used for Mercurial repositories:
-
+</td>
+<td rowspan='2'>
+== Mercurial ==
 {{{
 $ cd $CODESWARM_HOME/convert_logs/
 $ python hg_log.py /Path/To/Your/Mercurial/Repository
 }}}
 
 this produces the file `$CODESWARM_HOME/data/hglog.xml` for your given repository.
+</td>
+
+</tr>
+<tr>
+
+<td>
+== SVN ==
+{{{
+python convert_logs.py -s activity.log -o activity.xml
+}}}
+</td>
+<td>
+== CVS ==
+{{{
+python convert_logs.py -c activity.log -o activity.xml
+}}}
+</td>
+<td>
+== darcs ==
+To document.
+</td>
+<td>
+== MediaWiki ==
+{{{
+python convert_logs.py --wikiswarm-log=activity.log -o activity.xml
+}}}
+</td>
+</tr>
+
+<tr>
+<td colspan='2'>
+
+This will generate a file called activity.xml. 
+
+At this point, you will not need activity.log anymore, so you can delete it.
+
+</td>
+</tr>
+</table>
+
 
 = Step 3: Executing code_swarm =
 
