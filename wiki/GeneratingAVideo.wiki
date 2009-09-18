@@ -23,7 +23,7 @@ Generating your video is done in 4 steps :
 
 <table border='1'>
 <tr>
-<td colspan=3>
+<td colspan=5>
 = Step 1: Getting the activity log =
 </td>
 </tr>
@@ -89,7 +89,7 @@ To get a wikiswarm report from the wiki use the maintenance script inside of the
 </tr>
 
 <tr>
-<td colspan='3'>
+<td colspan='5'>
 = Step 2: Convert the log =
 code_swarm has a python converter in its `convert_logs` directory. For a list of all the  supported systems, use: `python convert_logs.py --help` .
 
@@ -104,7 +104,7 @@ code_swarm has a python converter in its `convert_logs` directory. For a list of
  # Copy the activity.log file generated above into the current directory
  # Launch the convert_logs.py script:
 </td>
-<td rowspan='2'>
+<td valign='top' rowspan='3'>
 == Mercurial ==
 {{{
 $ cd $CODESWARM_HOME/convert_logs/
@@ -133,7 +133,7 @@ python convert_logs.py -c activity.log -o activity.xml
 == darcs ==
 To document.
 </td>
-<td>
+<td rowspan='2' valign='top'>
 == MediaWiki ==
 {{{
 python convert_logs.py --wikiswarm-log=activity.log -o activity.xml
@@ -142,7 +142,7 @@ python convert_logs.py --wikiswarm-log=activity.log -o activity.xml
 </tr>
 
 <tr>
-<td colspan='2'>
+<td colspan='3'>
 
 This will generate a file called activity.xml. 
 
@@ -150,11 +150,13 @@ At this point, you will not need activity.log anymore, so you can delete it.
 
 </td>
 </tr>
-</table>
 
-
+<tr>
+<td colspan=5>
 = Step 3: Executing code_swarm =
+</td>
 
+<td colspan=5>
 To execute code_swarm, you need just need *ant* and *javac*. For most people, you just want to check out trunk and use the supplied ant script or run.sh script in that directory. Please refer to the [[HowtoBuild]] Wiki page.
 
 Before running, you will need to configure a config file for your project. /trunk/data 
@@ -167,6 +169,10 @@ Afterwards, just edit your configuration file (`$CODESWARM_HOME/sample.config` i
 The final step is just to go into the main folder (`$CODESWARM_HOME`) and type `./run.sh` (or `run.bat`). You should see a window with the video.
 
 *Note*: Do not use `ant run`, it will fail for Mercurial repositories. But you might need to run `ant` once beforehand to compile the code (see [[HowtoBuild]] for more info).
+</td>
+</tr>
+</table>
+
 
 
 = Step 4: Creating the video = 
