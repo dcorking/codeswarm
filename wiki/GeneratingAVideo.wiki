@@ -155,7 +155,9 @@ At this point, you will not need activity.log anymore, so you can delete it.
 <td colspan=5>
 = Step 3: Executing code_swarm =
 </td>
+</tr>
 
+<tr>
 <td colspan=5>
 To execute code_swarm, you need just need *ant* and *javac*. For most people, you just want to check out trunk and use the supplied ant script or run.sh script in that directory. Please refer to the [[HowtoBuild]] Wiki page.
 
