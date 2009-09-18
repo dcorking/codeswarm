@@ -9,18 +9,18 @@ A dialog will show up, asking you for the repository url, your username and pass
 The repository gets fetched, converted and codeswarm will be started. This will create the frames of the video for you. If you want to create a real video, see "*Creating the video*" (below).
  * if you want to access a non-svn repository, read on:
 
-This guide explains how to generate a video under a Linux install (it is based on Linux tools) but might be applied to a Windows workstation as well (some other tools might need to be used)
+This guide explains how to generate a video under a Linux install (it is based on Linux tools) but might be applied to a Windows or OSX workstation as well (some other tools might need to be used)
 
-To make it short, generating your video is done in 4 steps :
+Generating your video is done in 4 steps :
 
- # get the activity log out of your versionning system
+ # get the activity log out of your versioning system
  # convert the activity log to something code_swarm can use
- # excuting code_swarm
+ # executing code_swarm
  # making a video out of the exported images
 
 The first step, of course, is to download code_swarm from SVN (check out the [http://code.google.com/p/codeswarm/source/checkout Source Checkout] page for that). You will also need java and ant to build it.
 
-= Getting the activity log =
+= Step 1: Getting the activity log =
 
 == SVN ==
 
@@ -50,11 +50,15 @@ To get a wikiswarm report from the wiki use the maintenance script inside of the
   darcs changes --summary --reverse > activity.log
 }}}
 
-== Other versionning systems ==
+== Mercurial ==
+
+Nothing to do here, read next step.
+
+== Other versioning systems ==
 
 Documentation to come
 
-= Convert the log =
+= Step 2: Convert the log =
 
 code_swarm has a python converter in its convert_logs directory.
 Before you start using it, make sure you read this issue report: [http://code.google.com/p/codeswarm/issues/detail?id=6]
@@ -71,13 +75,35 @@ This will generate a file called activity.xml.
 
 At this point, you will not need activity.log anymore, so you can delete it.
 
-= Executing code_swarm =
+== Mercurial specific ==
+
+Assuming codeswarm is located in `$CODESWARM_HOME`, we have a python script in `convert_logs` that may be used for Mercurial repositories:
+
+{{{
+$ cd $CODESWARM_HOME/convert_logs/
+$ python hg_log.py /Path/To/Your/Mercurial/Repository
+}}}
+
+this produces the file `$CODESWARM_HOME/data/hglog.xml` for your given repository.
+
+= Step 3: Executing code_swarm =
 
 To execute code_swarm, you need just need *ant* and *javac*. For most people, you just want to check out trunk and use the supplied ant script or run.sh script in that directory. Please refer to the [[HowtoBuild]] Wiki page.
 
-Before running, you will need to configure a config file for your project. /trunk/data has an example of a config file. See the rest of the wiki for more help. 
+Before running, you will need to configure a config file for your project. /trunk/data 
+has an example of a config file. See the rest of the wiki for more help. 
 
-= Creating the video = 
+== Mercurial specific ==
+
+Afterwards, just edit your configuration file (`$CODESWARM_HOME/sample.config` is fine) to reflect that `InputFile=data/hglog.xml` where `hglog.xml` is the file produced at the previous step.
+
+The final step is just to go into the main folder (`$CODESWARM_HOME`) and type `./run.sh` (or `run.bat`). You should see a window with the video.
+
+*Note*: Do not use `ant run`, it will fail for Mercurial repositories. But you might need to run `ant` once beforehand to compile the code (see [[HowtoBuild]] for more info).
+
+
+= Step 4: Creating the video = 
+
 The previous step created a series of screenshots in the PNG format under the *code_swarm/frames/* directory. Now you want to use them to build a video. MEncoder is one tool to do that. Just get into that frames/ directory and type:
 
 {{{
