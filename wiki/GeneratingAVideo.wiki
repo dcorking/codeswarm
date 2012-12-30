@@ -78,7 +78,7 @@ This will create a file called *activity.log*.
 </td>
 
 <td valign='top'>
-To get a wikiswarm report from the wiki use the maintenance script inside of the  [http://svn.wikimedia.org/svnroot/mediawiki/trunk/extensions/SwarmExport/swarmExport.php SwarmExport extension]
+To get a wikiswarm report from the wiki use the maintenance script inside of the <a href="https://gerrit.wikimedia.org/r/gitweb?p=mediawiki/extensions/SwarmExport.git;a=blob;f=swarmExport.php;hb=HEAD">SwarmExport extension</a>
 </td>
 <td valign='top'>
 
